@@ -1,4 +1,4 @@
-import { Navigation } from "@/components/navigation"
+import { Navigation } from "@/components/navigation-enhanced"
 import { HeroSection } from "@/components/hero-section"
 import { PremiumProductShowcase } from "@/components/premium-product-showcase"
 import { TechnicalInnovationSection } from "@/components/technical-innovation-section"
