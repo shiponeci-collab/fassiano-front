@@ -10,11 +10,19 @@ export function HeroSection() {
   const [scrollY, setScrollY] = useState(0)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [showBadge, setShowBadge] = useState(false)
+  const [placardOpen, setPlacardOpen] = useState(false)
+  const [hasAutoOpened, setHasAutoOpened] = useState(false)
   const heroRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     // Ensure badge starts hidden
     setShowBadge(false)
+    
+    // Auto-open closet when user first arrives on the page
+    setTimeout(() => {
+      setPlacardOpen(true)
+      setHasAutoOpened(true)
+    }, 800) // Delay for dramatic entrance effect
     
     const handleScroll = () => {
       const newScrollY = window.scrollY
@@ -22,6 +30,11 @@ export function HeroSection() {
       
       // Show badge only after user scrolls down significantly
       setShowBadge(newScrollY > 200)
+      
+      // Close closet when user starts scrolling
+      if (newScrollY > 50 && hasAutoOpened) {
+        setPlacardOpen(false)
+      }
     }
     
     const handleMouseMove = (e: MouseEvent) => {
@@ -31,14 +44,39 @@ export function HeroSection() {
     window.addEventListener("scroll", handleScroll, { passive: true })
     window.addEventListener("mousemove", handleMouseMove, { passive: true })
     
+    // Intersection Observer for reopening closet when user returns to hero
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.target === heroRef.current && hasAutoOpened) {
+            if (entry.isIntersecting && scrollY < 50) {
+              // Reopen closet only if user scrolls back to top (near beginning)
+              setPlacardOpen(true)
+            }
+          }
+        })
+      },
+      {
+        threshold: 0.6, // Trigger when 60% of hero section is visible
+        rootMargin: "0px" // No margin for precise control
+      }
+    )
+
+    if (heroRef.current) {
+      observer.observe(heroRef.current)
+    }
+    
     // Initial scroll check in case page is already scrolled
     handleScroll()
     
     return () => {
       window.removeEventListener("scroll", handleScroll)
       window.removeEventListener("mousemove", handleMouseMove)
+      if (heroRef.current) {
+        observer.unobserve(heroRef.current)
+      }
     }
-  }, [])
+  }, [hasAutoOpened, scrollY]) // Re-run when dependencies change
 
   const scrollToNext = () => {
     const nextSection = document.querySelector("#next-section")
@@ -99,11 +137,174 @@ export function HeroSection() {
           <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
         </div>
 
-        {/* Main Content Grid */}
-        <div className="relative z-10 h-full grid grid-cols-1 lg:grid-cols-2 max-w-7xl mx-auto w-full">
+        {/* Closet Container with Opening Effect */}
+        <div className="relative z-10 h-full flex items-center justify-center">
           
-          {/* Left Content Column */}
-          <div className="flex flex-col justify-center px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8 pt-20 sm:pt-24 lg:pt-0">
+          {/* Premium Sneaker Box - Completely Opaque */}
+          <motion.div
+            className="absolute inset-0 z-20 bg-black"
+            initial={{ opacity: 1 }}
+            animate={{ opacity: placardOpen ? 0 : 1 }}
+            transition={{ 
+              duration: 0.5, 
+              ease: "easeInOut",
+              delay: placardOpen ? 3.0 : 0 // Fade out after complete unboxing
+            }}
+          >
+            {/* Box Lid (Top) - Completely Solid */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-b from-orange-600 via-orange-700 to-orange-800 border-b-4 border-orange-900 overflow-hidden shadow-2xl"
+              style={{
+                clipPath: "polygon(0 0, 100% 0, 100% 50%, 0 50%)"
+              }}
+              animate={{
+                y: placardOpen ? "-100%" : "0%",
+                rotateX: placardOpen ? -25 : 0,
+                z: placardOpen ? 50 : 0
+              }}
+              transition={{
+                duration: 3.5,
+                ease: [0.16, 1, 0.3, 1],
+                delay: placardOpen ? 0.5 : 0
+              }}
+            >
+              {/* Premium Logo Design */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                {/* Main Logo */}
+                <div className="mb-4">
+                  <div className="text-white font-black text-4xl md:text-5xl tracking-wider drop-shadow-lg">
+                    FASSIANO
+                  </div>
+                  <div className="text-orange-200 text-sm font-medium tracking-[0.3em] mt-1">
+                    PREMIUM COLLECTION
+                  </div>
+                </div>
+                
+                {/* Logo Decorative Elements */}
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-8 h-0.5 bg-white/60"></div>
+                  <div className="w-3 h-3 border-2 border-white/60 rotate-45"></div>
+                  <div className="w-8 h-0.5 bg-white/60"></div>
+                </div>
+                
+                {/* Product Info */}
+                <div className="text-white/80 text-xs font-medium">
+                  <div>HERITAGE • PREMIUM • GLOBAL</div>
+                  <div className="mt-1 text-orange-200">EST. 2025</div>
+                </div>
+              </div>
+              
+              {/* Box Lid Texture & Details */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-black/20 opacity-60"></div>
+              <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-500 to-orange-400 shadow-lg"></div>
+              <div className="absolute bottom-0 left-0 w-full h-6 bg-gradient-to-r from-orange-800 to-orange-900 shadow-inner"></div>
+              
+              {/* Corner Details */}
+              <div className="absolute top-4 left-4 w-6 h-6 border-l-2 border-t-2 border-white/30"></div>
+              <div className="absolute top-4 right-4 w-6 h-6 border-r-2 border-t-2 border-white/30"></div>
+            </motion.div>
+
+            {/* Box Base (Bottom) - Completely Solid */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-t from-orange-800 via-orange-700 to-orange-600 overflow-hidden shadow-2xl"
+              style={{
+                clipPath: "polygon(0 50%, 100% 50%, 100% 100%, 0 100%)"
+              }}
+              animate={{
+                y: placardOpen ? "50%" : "0%"
+              }}
+              transition={{
+                duration: 3.5,
+                ease: [0.16, 1, 0.3, 1],
+                delay: placardOpen ? 0.8 : 0
+              }}
+            >
+              {/* Box Interior - Premium Lining */}
+              <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-orange-300/30 to-orange-400/20 shadow-inner">
+                <div className="absolute inset-x-4 top-2 h-8 bg-white/10 rounded-t-lg border-t border-white/20"></div>
+              </div>
+              
+              {/* Box Bottom Details */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-center">
+                <div className="text-white/60 text-xs font-medium tracking-wider">
+                  HANDCRAFTED EXCELLENCE
+                </div>
+                <div className="text-orange-200/60 text-[10px] mt-1">
+                  MADE WITH PRECISION
+                </div>
+              </div>
+              
+              {/* Box Base Texture */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/5 opacity-50"></div>
+              <div className="absolute top-0 left-0 w-full h-4 bg-gradient-to-r from-orange-600 to-orange-500 shadow-lg"></div>
+              <div className="absolute bottom-0 left-0 w-full h-3 bg-gradient-to-r from-orange-900 to-orange-800 shadow-inner"></div>
+              
+              {/* Corner Reinforcements */}
+              <div className="absolute bottom-4 left-4 w-4 h-4 border-l-2 border-b-2 border-white/20"></div>
+              <div className="absolute bottom-4 right-4 w-4 h-4 border-r-2 border-b-2 border-white/20"></div>
+            </motion.div>
+
+
+          </motion.div>
+
+          {/* Dynamic Lighting System */}
+          <motion.div
+            className="absolute inset-0 z-10"
+            animate={{
+              opacity: placardOpen ? 1 : 0.3
+            }}
+            transition={{ duration: 2.0, ease: "easeInOut" }}
+          >
+            {/* Box Interior Light (when closed) */}
+            <motion.div
+              className="absolute top-1/3 left-1/2 -translate-x-1/2 w-80 h-80 bg-gradient-radial from-orange-200/15 via-orange-100/8 to-transparent rounded-full blur-2xl"
+              animate={{
+                opacity: placardOpen ? 0 : 0.8,
+                scale: placardOpen ? 0.3 : 1
+              }}
+              transition={{ 
+                duration: 2.5, 
+                ease: [0.25, 1, 0.5, 1],
+                delay: placardOpen ? 0 : 0.5
+              }}
+            />
+            
+            {/* Unboxing Reveal Light (when open) */}
+            <motion.div
+              className="absolute top-1/4 right-1/3 w-96 h-96 bg-gradient-to-br from-red-500/25 to-orange-500/20 rounded-full blur-3xl"
+              animate={{
+                opacity: placardOpen ? 1 : 0,
+                scale: placardOpen ? 1.2 : 0.3,
+                y: placardOpen ? 0 : 100
+              }}
+              transition={{ 
+                duration: 2.8, 
+                ease: [0.25, 1, 0.5, 1], 
+                delay: placardOpen ? 2.0 : 0 // Wait for unboxing to complete
+              }}
+            />
+            
+            {/* Ambient Fashion Lighting */}
+            <motion.div
+              className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-gradient-to-tr from-purple-500/15 to-blue-500/10 rounded-full blur-2xl"
+              animate={{
+                opacity: placardOpen ? 0.6 : 0,
+                scale: placardOpen ? 1 : 0.3,
+                y: placardOpen ? 0 : 50
+              }}
+              transition={{ 
+                duration: 2.0, 
+                ease: [0.25, 1, 0.5, 1], 
+                delay: placardOpen ? 2.0 : 0 // Final lighting effect
+              }}
+            />
+          </motion.div>
+
+          {/* Main Content Grid */}
+          <div className="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 px-4 sm:px-6 lg:px-8">
+            
+            {/* Left Content Column */}
+            <div className="flex flex-col justify-center space-y-6 sm:space-y-8 py-20 sm:py-24 lg:py-0">
             
             {/* Scroll-triggered Badge - Appears on scroll */}
             <AnimatePresence mode="wait">
@@ -252,17 +453,9 @@ export function HeroSection() {
                 />
               </div>
 
-              {/* Product Info Overlay */}
-              <motion.div
-                className="absolute top-8 right-8 bg-white/10 backdrop-blur-md rounded-2xl px-4 py-3 border border-white/20"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 2 }}
-              >
-                <div className="text-white text-sm font-semibold">Heritage Black</div>
-                <div className="text-white/70 text-xs">Premium Collection</div>
-              </motion.div>
+
             </motion.div>
+            </div>
           </div>
         </div>
 
