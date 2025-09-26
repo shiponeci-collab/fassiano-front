@@ -47,6 +47,84 @@
   --apple-pink: oklch(0.65 0.15 340);
 }
 
+/* Custom gradient utilities */
+.bg-gradient-radial {
+  background: radial-gradient(ellipse at center, var(--tw-gradient-stops));
+}
+
+.bg-gradient-radial-at-t {
+  background: radial-gradient(ellipse at top, var(--tw-gradient-stops));
+}
+
+.bg-gradient-radial-at-b {
+  background: radial-gradient(ellipse at bottom, var(--tw-gradient-stops));
+}
+
+.bg-gradient-radial-at-l {
+  background: radial-gradient(ellipse at left, var(--tw-gradient-stops));
+}
+
+.bg-gradient-radial-at-r {
+  background: radial-gradient(ellipse at right, var(--tw-gradient-stops));
+}
+
+/* Dark Leather Effect */
+.leather-texture {
+  background: 
+    /* Subtle noise texture */
+    radial-gradient(circle at 25% 25%, rgba(255,255,255,0.02) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(255,255,255,0.015) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(0,0,0,0.8) 0%, transparent 100%),
+    /* Leather grain pattern */
+    repeating-linear-gradient(
+      45deg,
+      rgba(0,0,0,0.05) 0px,
+      rgba(0,0,0,0.05) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255,255,255,0.005) 0px,
+      rgba(255,255,255,0.005) 1px,
+      transparent 1px,
+      transparent 4px
+    ),
+    /* Base leather color */
+    linear-gradient(135deg, #0a0a0a 0%, #1a1412 25%, #0f0f0f 50%, #1a1610 75%, #0d0d0d 100%);
+  position: relative;
+}
+
+.leather-texture::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Leather shine and depth */
+  background: 
+    radial-gradient(ellipse 800px 400px at 50% 0%, rgba(139, 120, 93, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 600px 300px at 20% 80%, rgba(101, 85, 63, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 400px 200px at 80% 30%, rgba(120, 100, 75, 0.04) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+.leather-texture::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Fine leather texture overlay */
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.015) 1px, transparent 0);
+  background-size: 20px 20px;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
 .dark {
   --background: oklch(0.08 0.005 85.87);
   --foreground: oklch(0.95 0.005 85.87);
@@ -225,5 +303,15 @@ html {
     @apply bg-background text-foreground;
     font-feature-settings: 'cv11', 'ss01';
     font-variation-settings: 'opsz' 32;
+  }
+}
+
+@layer utilities {
+  .bg-gradient-radial {
+    background-image: radial-gradient(circle, var(--tw-gradient-stops));
+  }
+  
+  .animate-spin-slow {
+    animation: spin 20s linear infinite;
   }
 }

@@ -188,7 +188,9 @@ export function TracingBeamSection() {
                       : "bg-background border-border"
                   }`}
                 >
-                  {scrollProgress > index / timelineData.length && <item.icon className="w-3 h-3 text-background" />}
+                  {scrollProgress > index / timelineData.length && (
+                    <item.icon className="w-3 h-3 text-white" strokeWidth={2.5} />
+                  )}
                 </div>
 
                 <div className="bg-card backdrop-blur-sm rounded-2xl border border-border hover:border-muted-foreground/20 transition-all duration-300 overflow-hidden group">
@@ -199,7 +201,7 @@ export function TracingBeamSection() {
                         <div
                           className={`w-16 h-16 rounded-2xl bg-[var(--${item.color})]/10 flex items-center justify-center mb-4`}
                         >
-                          <item.icon className={`w-8 h-8 text-[var(--${item.color})]`} />
+                          <item.icon className={`w-8 h-8 text-[var(--${item.color})]`} strokeWidth={1.5} />
                         </div>
                         <div className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
                           {item.category}
