@@ -1,4 +1,4 @@
-import { Navigation } from "@/components/fassiano-navigation"
+import { Navigation } from "@/components/navigation"
 import { HeroSection } from "@/components/hero-section"
 import { BookTimelineSection } from "@/components/book-timeline-section"
 import { SneakerCustomizationSection } from "@/components/sneaker-customization-section"
@@ -19,36 +19,39 @@ export default function Home() {
       {/* 1. HOOK - Brand Introduction & First Impression */}
       <HeroSection />
       
-      {/* 2. DESIRE - Product Gallery Showcase (Visual Impact) */}
+      {/* HIDDEN SECTIONS - Comment out to show only Hero */}
+      {/* 
+      2. DESIRE - Product Gallery Showcase (Visual Impact)
       <FassianoHeroParallax />
       
-      {/* 3. SOCIAL PROOF - Product Variety & Options (Trust Building) */}
+      3. SOCIAL PROOF - Product Variety & Options (Trust Building)
       <ProductLineupSection />
       
-      {/* 4. VALUE PROPOSITION - Detailed Product Features (Interest) */}
+      4. VALUE PROPOSITION - Detailed Product Features (Interest)
       <div id="next-section">
         <PremiumProductShowcase />
       </div>
       
-      {/* 5. INNOVATION - Advanced Technology Features (Differentiation) */}
+      5. INNOVATION - Advanced Technology Features (Differentiation)
       <div id="innovation">
         <TechnicalInnovationSection />
       </div>
       
-      {/* 6. PERSONALIZATION - Customization Options (Engagement) */}
+      6. PERSONALIZATION - Customization Options (Engagement)
       <SneakerCustomizationSection />
       
-      {/* 7. TECHNICAL DETAILS - Specs for Technical Users (Validation) */}
+      7. TECHNICAL DETAILS - Specs for Technical Users (Validation)
       <TechnicalSpecsSection />
       
-      {/* 8. BRAND EXPERIENCE - Journey & Story (Emotional Connection) */}
+      8. BRAND EXPERIENCE - Journey & Story (Emotional Connection)
       <TracingBeamSection />
       
-      {/* 9. ACTION - Final Call to Action (Conversion) */}
+      9. ACTION - Final Call to Action (Conversion)
       <CTASection />
       
-      {/* <BookTimelineSection /> */}
-      {/* <EnhancedGlobalAvailability /> */}
+      <BookTimelineSection />
+      <EnhancedGlobalAvailability />
+      */}
     </main>
   )
 }

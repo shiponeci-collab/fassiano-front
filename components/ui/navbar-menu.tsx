@@ -3,6 +3,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
+import { Zap } from "lucide-react";
 
 const transition = {
   type: "spring" as const,
@@ -70,9 +71,36 @@ export const Menu = ({
   return (
     <nav
       onMouseLeave={() => setActive(null)} // resets the state
-      className="relative rounded-full border border-white/20 bg-black/80 backdrop-blur-md shadow-2xl flex justify-center space-x-4 px-8 py-6"
+      className="relative rounded-full border border-white/20 bg-black/80 backdrop-blur-md shadow-2xl flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 max-w-4xl mx-auto"
     >
-      {children}
+      {/* Logo - Left Side */}
+      <div className="flex-shrink-0">
+        <Image 
+          src="/brand-logohero.png" 
+          alt="Fassiano Logo" 
+          width={120}
+          height={32}
+          className="h-6 sm:h-8 w-auto object-contain filter brightness-0 invert opacity-90 hover:opacity-100 transition-opacity duration-300"
+        />
+      </div>
+      
+      {/* Center spacer - hidden on mobile */}
+      <div className="hidden md:flex flex-1"></div>
+      
+      {/* Hook Text for Teaser Version - Right Side - Hidden on mobile */}
+      <div className="hidden md:flex items-center justify-end">
+        <h1 className="text-base lg:text-lg font-normal tracking-tight flex items-center gap-2" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif' }}>
+          <span className="text-white/90 hover:text-white transition-colors duration-300">
+            Where Ancient Moroccan Art Meets Tomorrow
+          </span>
+          <Zap className="w-4 lg:w-5 h-4 lg:h-5 text-white/70 hover:text-white transition-colors duration-300" />
+        </h1>
+      </div>
+      
+      {/* Original menu items (hidden for teaser) */}
+      <div className="hidden">
+        {children}
+      </div>
     </nav>
   );
 };

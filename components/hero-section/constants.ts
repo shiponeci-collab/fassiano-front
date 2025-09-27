@@ -36,14 +36,15 @@ export const BOX_CONFIG = {
 
 // Product Information
 export const PRODUCT_INFO = {
-  name: "Heritage Black",
-  subtitle: "Where tradition meets innovation",
+  name: "Moroccan Heritage Collection",
+  subtitle: "Crafted by master artisans celebrating Morocco's rich cultures",
   features: [
-    "Premium Materials",
-    "Handcrafted Excellence", 
-    "Limited Edition"
+    "Hand-Stitched Moroccan Leather",
+    "Multicultural Design Elements", 
+    "Artisan Crafted Excellence"
   ],
-  warranty: "Complimentary Worldwide Shipping • Lifetime Craftsmanship Warranty"
+  warranty: "Complimentary Worldwide Shipping • Authentic Moroccan Craftsmanship Guarantee",
+  description: "Each pair tells the story of Morocco's diverse cultural heritage, where skilled craftsmen blend traditional techniques from different regions, creating unique designs that celebrate the country's multicultural identity."
 }
 
 // Collection Items
