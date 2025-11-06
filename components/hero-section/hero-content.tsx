@@ -1,9 +1,12 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
-import { PRODUCT_INFO, ANIMATION_CONFIG } from "./constants"
+import { PRODUCT_INFO } from "./constants"
+import { NotifyMeForm } from "../notify-me-form"
 
 export function HeroContent() {
+  const [showNotifyForm, setShowNotifyForm] = useState(false)
   return (
     <motion.div
       className="text-left space-y-8"
@@ -19,9 +22,13 @@ export function HeroContent() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1.0, delay: 0.5 }}
         >
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight leading-none mb-3 md:mb-4" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif' }}>
-            <span className="text-white">FASS</span><span className="text-transparent bg-gradient-to-r from-white via-gray-300 to-gray-400 bg-clip-text">IANO</span>
-          </h1>
+          <div className="mb-3 md:mb-4">
+            <img 
+              src="/brand-logohero.png" 
+              alt="FASSIANO" 
+              className="h-12 sm:h-14 md:h-16 lg:h-20 xl:h-24 w-auto object-contain filter brightness-0 invert"
+            />
+          </div>
         </motion.div>
 
         {/* Product Information - Teaser Version */}
@@ -63,8 +70,9 @@ export function HeroContent() {
         transition={{ duration: 1.0, delay: 1.5 }}
       >
         <motion.button
-          className="group relative bg-gradient-to-r from-red-500 to-red-600 text-white px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-medium tracking-wide rounded-full overflow-hidden transition-all duration-300 w-full sm:w-auto"
+          className="group relative bg-gradient-to-r from-red-500 to-red-600 text-white px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-medium tracking-wide rounded-full overflow-hidden transition-all duration-300 w-full sm:w-auto cursor-pointer"
           style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif' }}
+          onClick={() => setShowNotifyForm(true)}
           whileHover={{ 
             y: -2,
             boxShadow: "0 10px 25px rgba(239, 68, 68, 0.3)"
@@ -80,6 +88,9 @@ export function HeroContent() {
           />
         </motion.button>
       </motion.div>
+
+      {/* Notify Me Form Modal */}
+      <NotifyMeForm isOpen={showNotifyForm} onClose={() => setShowNotifyForm(false)} />
 
       {/* Minimal Features - Teaser */}
       <motion.div

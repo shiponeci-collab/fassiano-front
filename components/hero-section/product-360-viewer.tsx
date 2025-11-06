@@ -4,12 +4,22 @@ import { useState, useRef, useEffect, useCallback } from "react"
 import { motion, useSpring, useTransform, useMotionValue } from "framer-motion"
 
 export function Product360Viewer() {
-  // Enhanced 360° simulation with more frames for smoother rotation
-  const totalFrames = 72 // 72 frames = 5° per frame for ultra-smooth rotation
-  const productImages = Array.from({ length: totalFrames }, (_, index) => ({
-    src: "/fassiano-product-hero.png",
-    rotation: (index * 5) % 360, // 0°, 5°, 10°, etc.
-  }))
+  // 360° rotation with showcase images
+  const totalFrames = 5 // 5 key showcase angles
+  const showcaseImages = [
+    "/fassiano-sneaker-product.png",
+    "/fassiano-product-hero.png",
+    "/fassiano-sneaker-product.png",
+    "/fassiano-product-hero.png",
+    "/fassiano-sneaker-product.png"
+  ];
+  
+  const productImages = Array.from({ length: totalFrames }, (_, index) => {
+    return {
+      src: showcaseImages[index],
+      rotation: (index * (360 / totalFrames)) % 360,
+    };
+  })
 
   const [currentFrame, setCurrentFrame] = useState(0)
   const [isAutoRotating, setIsAutoRotating] = useState(false) // Start with no auto rotation
@@ -41,11 +51,22 @@ export function Product360Viewer() {
     }
   }, [isAutoRotating, isDragging, isHovering, totalFrames])
 
-  // Enhanced drag handling with momentum
+  // Enhanced drag handling with momentum (Mouse + Touch)
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
     setIsDragging(true)
     setIsAutoRotating(false)
     lastMouseX.current = e.clientX
+    lastTime.current = Date.now()
+    setVelocity(0)
+  }, [])
+
+  // Touch support for mobile
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    e.preventDefault()
+    setIsDragging(true)
+    setIsAutoRotating(false)
+    lastMouseX.current = e.touches[0].clientX
     lastTime.current = Date.now()
     setVelocity(0)
   }, [])
@@ -60,7 +81,7 @@ export function Product360Viewer() {
     
     setVelocity(currentVelocity)
     
-    const sensitivity = 1.5 // More sensitive for better control
+    const sensitivity = 50 // Slower, more controlled rotation
     const frameChange = Math.round(deltaX / sensitivity)
 
     if (frameChange !== 0) {
@@ -71,6 +92,33 @@ export function Product360Viewer() {
         return newFrame
       })
       lastMouseX.current = e.clientX
+      lastTime.current = currentTime
+    }
+  }, [isDragging, totalFrames])
+
+  // Touch move support for mobile
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!isDragging) return
+    e.preventDefault()
+
+    const currentTime = Date.now()
+    const deltaX = e.touches[0].clientX - lastMouseX.current
+    const deltaTime = currentTime - lastTime.current
+    const currentVelocity = deltaTime > 0 ? deltaX / deltaTime : 0
+    
+    setVelocity(currentVelocity)
+    
+    const sensitivity = 60 // Slower for touch control
+    const frameChange = Math.round(deltaX / sensitivity)
+
+    if (frameChange !== 0) {
+      setCurrentFrame((prev) => {
+        let newFrame = prev + frameChange
+        if (newFrame < 0) newFrame = totalFrames + newFrame
+        if (newFrame >= totalFrames) newFrame = newFrame - totalFrames
+        return newFrame
+      })
+      lastMouseX.current = e.touches[0].clientX
       lastTime.current = currentTime
     }
   }, [isDragging, totalFrames])
@@ -147,6 +195,9 @@ export function Product360Viewer() {
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
         onMouseEnter={handleMouseEnter}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleMouseUp}
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.2, delay: 0.5 }}
@@ -191,25 +242,27 @@ export function Product360Viewer() {
             transformStyle: 'preserve-3d',
           }}
         >
-          <motion.img
-            src={productImages[safeCurrentFrame]?.src || "/fassiano-product-hero.png"}
-            alt="FASSIANO Premium Sneaker - 360° View"
-            className="w-full h-auto object-contain"
-            style={{
-              filter: `drop-shadow(0 25px 50px rgba(0,0,0,0.3)) brightness(${isHovering ? 1.1 : 1}) contrast(${isHovering ? 1.05 : 1})`,
-            }}
-            animate={{
-              filter: `drop-shadow(0 25px 50px rgba(0,0,0,0.${isHovering ? '4' : '3'})) brightness(${isHovering ? 1.1 : 1}) contrast(${isHovering ? 1.05 : 1})`,
-            }}
-            transition={{ duration: 0.3 }}
-          />
+          <div className="relative w-full" style={{ aspectRatio: '1/1', maxWidth: '600px', maxHeight: '600px', margin: '0 auto' }}>
+            <motion.img
+              src={productImages[safeCurrentFrame]?.src || "/fassiano-product-hero.png"}
+              alt="FASSIANO Premium Sneaker - 360° View"
+              className="absolute inset-0 w-full h-full object-contain"
+              style={{
+                filter: `drop-shadow(0 25px 50px rgba(0,0,0,0.3)) brightness(${isHovering ? 1.1 : 1}) contrast(${isHovering ? 1.05 : 1})`,
+              }}
+              animate={{
+                filter: `drop-shadow(0 25px 50px rgba(0,0,0,0.${isHovering ? '4' : '3'})) brightness(${isHovering ? 1.1 : 1}) contrast(${isHovering ? 1.05 : 1})`,
+              }}
+              transition={{ duration: 0.3 }}
+            />
+          </div>
         </motion.div>
 
 
 
-        {/* Fantastic Product Name Presentation - Top Position */}
+        {/* Fantastic Product Name Presentation - Responsive for all screens */}
         <motion.div
-          className="absolute -top-16 left-1/2 transform -translate-x-1/2 text-center pointer-events-none"
+          className="absolute -top-8 sm:-top-12 md:-top-8 lg:-top-16 left-1/2 transform -translate-x-1/2 text-center pointer-events-none"
           initial={{ opacity: 0, y: -20, scale: 0.8 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 1.0, delay: 1.2, type: "spring", bounce: 0.4 }}
@@ -248,7 +301,7 @@ export function Product360Viewer() {
               ease: "linear"
             }}
           >
-            X-BLACK
+            X-RED
           </motion.h3>
           
           {/* Subtitle with premium feel */}
@@ -302,11 +355,62 @@ export function Product360Viewer() {
         )}
       </motion.div>
 
-      {/* Subtle rotation speed indicator */}
+      {/* 360° Interactive Indicator */}
       <motion.div
-        className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-16 h-0.5 bg-white/20 rounded-full overflow-hidden"
+        className="absolute -bottom-16 sm:-bottom-20 left-1/2 transform -translate-x-1/2 flex flex-col items-center pointer-events-none"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 2.0 }}
+      >
+        {/* 360° Icon and Text */}
+        <div className="flex items-center gap-2 text-white/60 text-xs sm:text-sm font-medium mb-2" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif' }}>
+          <motion.div
+            className="relative w-6 h-6 sm:w-8 sm:h-8 border border-white/40 rounded-full flex items-center justify-center"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+          >
+            <span className="text-xs sm:text-sm font-bold">360°</span>
+            <motion.div
+              className="absolute w-1 h-1 bg-red-400 rounded-full"
+              style={{ top: 2, right: 2 }}
+              animate={{ opacity: [1, 0.3, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            />
+          </motion.div>
+          <motion.span
+            animate={{ opacity: [0.6, 1, 0.6] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            {/* Desktop: Drag to rotate | Mobile: Swipe to rotate */}
+            <span className="hidden sm:inline">Drag to rotate</span>
+            <span className="sm:hidden">Swipe to rotate</span>
+          </motion.span>
+        </div>
+
+        {/* Animated arrows showing swipe direction */}
+        <div className="flex items-center gap-1">
+          <motion.div
+            className="text-white/40 text-lg"
+            animate={{ x: [-5, 5, -5] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            ←
+          </motion.div>
+          <motion.div
+            className="text-white/40 text-lg"
+            animate={{ x: [5, -5, 5] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            →
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* Subtle rotation speed indicator (when auto-rotating) */}
+      <motion.div
+        className="absolute -bottom-8 sm:-bottom-10 left-1/2 transform -translate-x-1/2 w-16 h-0.5 bg-white/20 rounded-full overflow-hidden"
         initial={{ opacity: 0 }}
-        animate={{ opacity: isAutoRotating && !isDragging ? 0.5 : 0 }}
+        animate={{ opacity: isAutoRotating && !isDragging ? 0.3 : 0 }}
         transition={{ duration: 0.5 }}
       >
         <motion.div
