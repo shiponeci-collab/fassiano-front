@@ -120,14 +120,14 @@ export function HeroSection() {
                 {/* Product Images Modal */}
                 {showProducts && (
                   <motion.div
-                    className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
+                    className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center p-4 pt-20"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.3 }}
                     onClick={() => setShowProducts(false)}
                   >
                     <motion.div
-                      className="relative max-w-6xl w-full"
+                      className="relative max-w-6xl w-full mt-16"
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ duration: 0.4, delay: 0.1 }}
@@ -135,7 +135,7 @@ export function HeroSection() {
                     >
                       {/* Close Button */}
                       <button
-                        className="absolute -top-12 right-0 text-white/70 hover:text-white transition-colors cursor-pointer"
+                        className="absolute -top-12 right-0 text-white/70 hover:text-white transition-colors cursor-pointer z-10"
                         onClick={() => setShowProducts(false)}
                       >
                         <X className="w-8 h-8" />
@@ -168,14 +168,14 @@ export function HeroSection() {
                 {/* Zoomed Image View */}
                 {selectedImage !== null && (
                   <motion.div
-                    className="fixed inset-0 z-[60] bg-black/98 flex items-center justify-center p-4"
+                    className="fixed inset-0 z-[70] bg-black/98 flex items-center justify-center p-4 pt-20"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.2 }}
                     onClick={() => setSelectedImage(null)}
                   >
                     <motion.div
-                      className="relative max-w-2xl max-h-[70vh] w-full mx-auto"
+                      className="relative max-w-2xl max-h-[70vh] w-full mx-auto mt-16"
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ duration: 0.3, type: "spring", bounce: 0.1 }}
@@ -183,7 +183,7 @@ export function HeroSection() {
                     >
                       {/* Close Button */}
                       <button
-                        className="absolute -top-10 right-0 text-white/60 hover:text-white transition-colors cursor-pointer"
+                        className="absolute -top-10 right-0 text-white/60 hover:text-white transition-colors cursor-pointer z-10"
                         onClick={() => setSelectedImage(null)}
                       >
                         <X className="w-7 h-7" />
