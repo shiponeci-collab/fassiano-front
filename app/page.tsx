@@ -1,4 +1,3 @@
-import { Navigation } from "@/components/navigation"
 import { HeroSection } from "@/components/hero-section"
 import { BookTimelineSection } from "@/components/book-timeline-section"
 import { SneakerCustomizationSection } from "@/components/sneaker-customization-section"
@@ -14,8 +13,6 @@ import { FassianoHeroParallax } from "@/components/fassiano-hero-parallax"
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <Navigation />
-      
       {/* 1. HOOK - Brand Introduction & First Impression */}
       <HeroSection />
       

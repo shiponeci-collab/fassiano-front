@@ -63,6 +63,15 @@ export function HeroSection() {
         <div className="absolute inset-0">
           <div className="absolute -top-40 left-1/2 h-[40rem] w-[40rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,_rgba(255,255,255,0.12),_transparent_60%)] blur-3xl" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,_rgba(239,68,68,0.18),_transparent_45%)]" />
+          <div
+            className="absolute inset-0 opacity-[0.12] mix-blend-screen"
+            style={{
+              backgroundImage:
+                "linear-gradient(135deg, rgba(255,255,255,0.18) 12.5%, transparent 12.5%, transparent 50%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.18) 62.5%, transparent 62.5%, transparent), linear-gradient(45deg, rgba(255,255,255,0.18) 12.5%, transparent 12.5%, transparent 50%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.18) 62.5%, transparent 62.5%, transparent)",
+              backgroundSize: "48px 48px",
+              backgroundPosition: "0 0, 24px 24px"
+            }}
+          />
           <div className="absolute inset-0 bg-gradient-to-b from-black via-black/60 to-black" />
         </div>
 
