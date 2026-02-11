@@ -66,11 +66,28 @@ export function HeroSectionServer() {
 
       {/* Static Spotlight Effect - CSS Only */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-40" role="presentation" aria-hidden="true">
+        {/* Top Left Spotlight */}
         <div 
           className="absolute top-0 left-0 w-[560px] h-[1380px] animate-spotlight-slow"
           style={{
             transform: 'translateY(-350px) rotate(-45deg)',
             background: 'radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(0, 85%, 70%, .12) 0, hsla(0, 85%, 60%, .04) 50%, hsla(0, 85%, 50%, 0) 80%)'
+          }}
+        />
+        {/* Left Side Spotlight */}
+        <div 
+          className="absolute top-1/2 -left-[200px] w-[500px] h-[800px]"
+          style={{
+            transform: 'translateY(-50%)',
+            background: 'radial-gradient(circle at center, hsla(0, 85%, 65%, .08) 0, hsla(0, 85%, 60%, .03) 40%, transparent 70%)'
+          }}
+        />
+        {/* Right Side Spotlight */}
+        <div 
+          className="absolute top-1/2 -right-[200px] w-[500px] h-[800px]"
+          style={{
+            transform: 'translateY(-50%)',
+            background: 'radial-gradient(circle at center, hsla(0, 85%, 65%, .08) 0, hsla(0, 85%, 60%, .03) 40%, transparent 70%)'
           }}
         />
       </div>
@@ -85,7 +102,7 @@ export function HeroSectionServer() {
 
             {/* Right Column - Interactive Gallery */}
             <div className="flex items-center justify-center order-1 lg:order-2 py-8 lg:py-0 mt-2 sm:mt-8 md:mt-12 lg:mt-20">
-              <div className="w-full max-w-xl">
+              <div className="w-full max-w-xl drop-shadow-[0_35px_50px_rgba(0,0,0,0.7)]">
                 <Suspense fallback={<GalleryFallback />}>
                   <ImageGallery modelData={MODEL_DATA} />
                 </Suspense>

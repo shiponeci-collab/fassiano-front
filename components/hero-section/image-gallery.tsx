@@ -37,33 +37,40 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
     setSelectedImageIndex(prev => (prev + 1) % activeImages.length)
   }
 
+  // Dynamic card colors based on selected model
+  const cardColors = selectedModel === "x-red" 
+    ? "border-red-500/40 border-t-red-400/60 bg-gradient-to-b from-red-950/50 to-black/80" 
+    : "border-zinc-600/50 border-t-zinc-400/70 bg-gradient-to-b from-zinc-900/70 to-black/90"
+
   return (
     <>
-      <div className="rounded-[2rem] border border-white/10 bg-white/5 backdrop-blur-2xl p-6 sm:p-8 shadow-[0_30px_80px_rgba(0,0,0,0.55)]">
-        <div className="flex items-start justify-between gap-6">
+      <div className={`rounded-[2rem] ${cardColors} backdrop-blur-3xl p-6 sm:p-8 shadow-[0_-25px_60px_rgba(0,0,0,0.55),0_25px_60px_rgba(0,0,0,0.65),0_0_0_1px_rgba(255,255,255,0.05)] transition-all duration-200 ease-out`}>
+        <div className="flex items-start justify-between gap-3 sm:gap-6">
           <div>
             <p className="text-xs uppercase tracking-[0.35em] text-white/45">Limited Edition</p>
-            <h3 className={`mt-2 text-2xl sm:text-3xl font-semibold tracking-tight bg-gradient-to-b ${activeModel.accent} bg-clip-text text-transparent`}>
+            <h3 className={`mt-2 text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight bg-gradient-to-b ${activeModel.accent} bg-clip-text text-transparent`}>
               {activeModel.name}
             </h3>
-            <p className="mt-2 text-sm text-white/60 max-w-sm">{activeModel.description}</p>
           </div>
-          <div className="flex flex-col items-end text-right">
+          <div className="flex flex-col items-end text-right flex-shrink-0">
             <div className="flex items-baseline gap-2">
-              <span className="text-sm text-white/40 line-through">{activeModel.originalPrice}</span>
+              <span className="text-xs sm:text-sm text-white/40 line-through">{activeModel.originalPrice}</span>
               <div className="flex items-start gap-1">
-                <span className="text-2xl sm:text-3xl font-bold text-white">{activeModel.price.split(' ')[0]}</span>
-                <span className="text-[10px] text-white/60 font-medium mt-0.5">{activeModel.price.split(' ')[1]}</span>
+                <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">{activeModel.price.split(' ')[0]}</span>
+                <span className="text-[9px] sm:text-[10px] text-white/60 font-medium mt-0.5">{activeModel.price.split(' ')[1]}</span>
               </div>
             </div>
-            <span className="mt-1 text-[8px] uppercase tracking-[0.3em] text-green-400">Pre-order 20% off</span>
+            <span className="mt-1 text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] text-green-400 whitespace-nowrap">-20% Off</span>
           </div>
         </div>
 
+        {/* Description - Full Width */}
+        <p className="mt-3 text-xs sm:text-sm text-white/60 leading-tight">{activeModel.description}</p>
+
         {/* Model Selector */}
         <div className="mt-6 grid grid-cols-2 gap-3">
-          {Object.entries(modelData).map(([key, model]) => {
-            const modelId = key as ModelId
+          {(["x-red", "x-black"] as const).map((modelId) => {
+            const model = modelData[modelId]
             const isActive = modelId === selectedModel
             return (
               <button
@@ -72,10 +79,11 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
                 onClick={() => setSelectedModel(modelId)}
                 aria-label={`Select ${model.name} model`}
                 aria-pressed={isActive}
-                className={`group flex items-center justify-between rounded-2xl border-2 px-4 py-3 text-left transition-all duration-300 ${
+                style={isActive ? { border: '2px solid #e5e4e2' } : undefined}
+                className={`group flex items-center justify-between rounded-2xl px-4 py-3 text-left transition-all duration-150 ease-out ${
                   isActive
-                    ? "border-[#e5e4e2] bg-white/10 shadow-[0_8px_24px_rgba(229,228,226,0.25)]"
-                    : "border-white/10 bg-white/5 hover:border-white/25 hover:bg-white/10"
+                    ? "bg-white/10"
+                    : "border-2 border-white/20 bg-white/5 hover:border-white/30 hover:bg-white/10"
                 }`}
               >
                 <div>
