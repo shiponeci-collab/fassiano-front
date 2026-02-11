@@ -139,7 +139,7 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
           onClick={onClose}
         >
           <motion.div
-            className="relative w-full max-w-md bg-gradient-to-b from-zinc-900 to-black border border-white/10 rounded-2xl p-8 shadow-2xl"
+            className="relative w-full max-w-md bg-gradient-to-b from-zinc-900 to-black border border-white/10 border-t-white/20 rounded-2xl p-8 shadow-[0_-25px_60px_rgba(0,0,0,0.55),0_25px_60px_rgba(0,0,0,0.55)]"
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
