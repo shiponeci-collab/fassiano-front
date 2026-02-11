@@ -1,7 +1,5 @@
-"use client"
-
-import { motion } from "framer-motion"
 import Image from "next/image"
+import { motion } from "framer-motion"
 import { PRODUCT_INFO } from "./constants"
 import { PreorderButton } from "./preorder-button"
 
@@ -11,25 +9,16 @@ interface HeroContentProps {
   selectedModel: ModelId
 }
 
-export function HeroContent({ selectedModel }: HeroContentProps) {
+export function HeroContentServer({ selectedModel }: HeroContentProps) {
   const modelLabel = selectedModel === "x-red" ? "X-RED" : "X-BLACK"
   const heroFont = "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"SF Pro Text\", system-ui, sans-serif"
   
   return (
-    <motion.div
-      className="text-left space-y-8"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1.5, delay: 0.8 }}
-    >
+    <div className="text-left space-y-8">
       {/* Brand Title & Product Information */}
       <div className="space-y-6">
         {/* Main Brand Title */}
-        <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1.0, delay: 0.5 }}
-        >
+        <div>
           <div className="mb-3 md:mb-4">
             <Image
               src="/brand-logohero.png"
@@ -41,15 +30,10 @@ export function HeroContent({ selectedModel }: HeroContentProps) {
               className="h-12 sm:h-14 md:h-16 lg:h-20 xl:h-24 w-auto object-contain filter brightness-0 invert"
             />
           </div>
-        </motion.div>
+        </div>
 
         {/* Product Information - Teaser Version */}
-        <motion.div 
-          className="space-y-4"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 1.0 }}
-        >
+        <div className="space-y-4">
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-light text-white/90 tracking-wide" style={{ fontFamily: heroFont }}>
             Moroccan Heritage
           </h2>
@@ -59,39 +43,24 @@ export function HeroContent({ selectedModel }: HeroContentProps) {
           </p>
           
           <div className="w-16 h-px bg-gradient-to-r from-red-400 to-red-600" />
-        </motion.div>
+        </div>
 
         {/* Selected Model */}
-        <motion.div
-          className="flex items-center gap-3"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 1.2 }}
-        >
+        <div className="flex items-center gap-3">
           <span className="text-xs uppercase tracking-[0.3em] text-white/50">Selected</span>
           <span className="rounded-full border border-white/15 bg-white/5 px-4 py-1 text-sm font-semibold tracking-wide text-white">
             {modelLabel}
           </span>
-        </motion.div>
+        </div>
       </div>
 
       {/* Single CTA - Teaser */}
-      <motion.div 
-        className="flex items-start"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.0, delay: 1.5 }}
-      >
+      <div className="flex items-start">
         <PreorderButton selectedModel={selectedModel} />
-      </motion.div>
+      </div>
 
       {/* Minimal Features - Teaser */}
-      <motion.div
-        className="space-y-3"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.0, delay: 1.8 }}
-      >
+      <div className="space-y-3">
         <div className="flex flex-wrap gap-6 text-white/50 text-xs">
           {PRODUCT_INFO.features.slice(0, 2).map((feature, index) => (
             <span key={index} className="flex items-center gap-2">
@@ -100,7 +69,7 @@ export function HeroContent({ selectedModel }: HeroContentProps) {
             </span>
           ))}
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   )
 }

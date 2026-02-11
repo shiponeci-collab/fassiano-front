@@ -1,11 +1,13 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, memo, lazy, Suspense } from "react"
 import { motion } from "framer-motion"
 import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from "lucide-react"
+import Image from "next/image"
 import { HeroContent } from "./hero-content"
-import { NotifyMeForm } from "../notify-me-form"
 import { Spotlight } from "../ui/spotlight-new"
+
+const NotifyMeForm = lazy(() => import("../notify-me-form").then(mod => ({ default: mod.NotifyMeForm })))
 
 type ModelId = "x-red" | "x-black"
 
@@ -103,15 +105,13 @@ export function HeroSection() {
           <div className="absolute inset-0 bg-gradient-to-b from-black via-black/60 to-black" />
         </div>
 
-        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-70">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-60">
           <Spotlight
             gradientFirst="radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(0, 85%, 70%, .12) 0, hsla(0, 85%, 60%, .04) 50%, hsla(0, 85%, 50%, 0) 80%)"
             gradientSecond="radial-gradient(50% 50% at 50% 50%, hsla(0, 85%, 70%, .08) 0, hsla(0, 85%, 60%, .03) 80%, transparent 100%)"
             gradientThird="radial-gradient(50% 50% at 50% 50%, hsla(0, 85%, 70%, .06) 0, hsla(0, 85%, 50%, .02) 80%, transparent 100%)"
+            duration={10}
           />
-          <div className="absolute top-1/4 right-1/4 w-96 h-96 opacity-30 scale-75">
-            <Spotlight />
-          </div>
         </div>
 
         <div className="relative z-10 min-h-screen pt-6 pb-6">
@@ -173,16 +173,24 @@ export function HeroSection() {
 
                     <div className="mt-6 relative overflow-hidden rounded-2xl border border-white/10 bg-black/40">
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_60%)]" />
-                      <motion.img
+                      <motion.div
                         key={activeImageSrc}
-                        src={activeImageSrc}
-                        alt={`${activeModel.name} view ${selectedImageIndex + 1}`}
-                        className="relative z-10 h-full w-full object-cover aspect-[4/3] cursor-zoom-in"
+                        className="relative z-10 aspect-[4/3] w-full"
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.4 }}
                         onClick={() => openViewer(selectedImageIndex)}
-                      />
+                      >
+                        <Image
+                          src={activeImageSrc}
+                          alt={`${activeModel.name} view ${selectedImageIndex + 1}`}
+                          fill
+                          priority={selectedImageIndex === 0}
+                          fetchPriority={selectedImageIndex === 0 ? "high" : "auto"}
+                          sizes="(max-width: 1024px) 90vw, 45vw"
+                          className="object-cover cursor-zoom-in"
+                        />
+                      </motion.div>
                       <button
                         type="button"
                         onClick={handlePrevImage}
@@ -223,7 +231,15 @@ export function HeroSection() {
                             }`}
                             aria-label={`Select angle ${index + 1}`}
                           >
-                            <img src={src} alt="" className="h-full w-full object-cover" />
+                            <Image
+                              src={src}
+                              alt=""
+                              width={96}
+                              height={64}
+                              sizes="48px"
+                              loading="lazy"
+                              className="h-full w-full object-cover"
+                            />
                             {isActive && <span className="absolute inset-0 bg-white/10" />}
                           </button>
                         )
@@ -279,10 +295,12 @@ export function HeroSection() {
                 <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/60">
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_60%)]" />
                   <div className="relative h-[60vh] w-full overflow-hidden">
-                    <img
+                    <Image
                       src={activeImageSrc}
                       alt={`${activeModel.name} full view ${selectedImageIndex + 1}`}
-                      className="h-full w-full object-contain transition-transform duration-200"
+                      fill
+                      sizes="90vw"
+                      className="object-contain transition-transform duration-200"
                       style={{ transform: `scale(${zoomLevel})` }}
                     />
                     <button
@@ -336,11 +354,15 @@ export function HeroSection() {
             </motion.div>
           )}
 
-          <NotifyMeForm
-            isOpen={showPreorder}
-            onClose={() => setShowPreorder(false)}
-            selectedModel={selectedModel}
-          />
+          <Suspense fallback={null}>
+            {showPreorder && (
+              <NotifyMeForm
+                isOpen={showPreorder}
+                onClose={() => setShowPreorder(false)}
+                selectedModel={selectedModel}
+              />
+            )}
+          </Suspense>
 
           <motion.div
             className="mt-6 flex justify-center lg:absolute lg:bottom-4 lg:left-4 lg:justify-start"

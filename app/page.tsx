@@ -1,4 +1,5 @@
-import { HeroSection } from "@/components/hero-section"
+import { Suspense } from "react"
+import { HeroSectionServer } from "@/components/hero-section/hero-section-server"
 import { BookTimelineSection } from "@/components/book-timeline-section"
 import { SneakerCustomizationSection } from "@/components/sneaker-customization-section"
 import { PremiumProductShowcase } from "@/components/premium-product-showcase"
@@ -12,9 +13,11 @@ import { FassianoHeroParallax } from "@/components/fassiano-hero-parallax"
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
-      {/* 1. HOOK - Brand Introduction & First Impression */}
-      <HeroSection />
+    <main className="min-h-screen" role="main">
+      {/* 1. HOOK - Brand Introduction & First Impression - SERVER COMPONENT with PPR */}
+      <Suspense fallback={<HeroFallback />}>
+        <HeroSectionServer />
+      </Suspense>
       
       {/* HIDDEN SECTIONS - Comment out to show only Hero */}
       {/* 
@@ -50,5 +53,18 @@ export default function Home() {
       <EnhancedGlobalAvailability />
       */}
     </main>
+  )
+}
+
+function HeroFallback() {
+  return (
+    <section className="relative min-h-screen bg-[#080808] text-white overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-black via-black/60 to-black" />
+      <div className="relative z-10 min-h-screen pt-6 pb-6 flex items-center justify-center">
+        <div className="text-center">
+          <div className="h-20 w-48 bg-white/5 animate-pulse rounded-lg mx-auto" />
+        </div>
+      </div>
+    </section>
   )
 }
