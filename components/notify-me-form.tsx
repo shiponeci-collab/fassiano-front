@@ -16,8 +16,8 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
     email: "",
     phone: "",
     address: "",
-    model: selectedModel ?? "x-black",
-    quantity: "1"
+    quantityBlack: "0",
+    quantityRed: "0"
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
@@ -27,7 +27,8 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
     if (!isOpen || !selectedModel) return
     setFormData(prev => ({
       ...prev,
-      model: selectedModel
+      quantityBlack: selectedModel === "x-black" && prev.quantityBlack === "0" && prev.quantityRed === "0" ? "1" : prev.quantityBlack,
+      quantityRed: selectedModel === "x-red" && prev.quantityBlack === "0" && prev.quantityRed === "0" ? "1" : prev.quantityRed
     }))
   }, [isOpen, selectedModel])
 
@@ -52,13 +53,20 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
       newErrors.address = "Address is required"
     }
 
-    if (!formData.model.trim()) {
-      newErrors.model = "Please select a model"
+    const quantityBlack = Number.parseInt(formData.quantityBlack, 10)
+    const quantityRed = Number.parseInt(formData.quantityRed, 10)
+
+    if (Number.isNaN(quantityBlack) || quantityBlack < 0) {
+      newErrors.quantityBlack = "Enter a valid quantity"
     }
 
-    const quantityValue = Number.parseInt(formData.quantity, 10)
-    if (Number.isNaN(quantityValue) || quantityValue < 1) {
-      newErrors.quantity = "Quantity must be at least 1"
+    if (Number.isNaN(quantityRed) || quantityRed < 0) {
+      newErrors.quantityRed = "Enter a valid quantity"
+    }
+
+    if ((quantityBlack || 0) < 1 && (quantityRed || 0) < 1) {
+      newErrors.quantityBlack = "Select at least 1 pair"
+      newErrors.quantityRed = "Select at least 1 pair"
     }
 
     setErrors(newErrors)
@@ -92,8 +100,9 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
           email: formData.email,
           phone: formData.phone,
           address: formData.address,
-          model: formData.model,
-          quantity: Number.parseInt(formData.quantity, 10),
+          quantity_black: Number.parseInt(formData.quantityBlack, 10),
+          quantity_red: Number.parseInt(formData.quantityRed, 10),
+          total_quantity: Number.parseInt(formData.quantityBlack, 10) + Number.parseInt(formData.quantityRed, 10),
           timestamp: new Date().toISOString()
         })
       })
@@ -105,8 +114,8 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
         email: "",
         phone: "",
         address: "",
-        model: selectedModel ?? "x-black",
-        quantity: "1"
+        quantityBlack: selectedModel === "x-black" ? "1" : "0",
+        quantityRed: selectedModel === "x-red" ? "1" : "0"
       })
       
       // Close form after 2 seconds
@@ -163,7 +172,7 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
             <div className="mb-6">
               <h2 className="text-2xl font-semibold text-white mb-2">Pre-order Request</h2>
               <p className="text-white/60 text-sm">
-                Reserve your pair with your preferred model and quantity
+                Reserve multiple pairs and mix X-BLACK with X-RED
               </p>
             </div>
 
@@ -257,48 +266,53 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
                 )}
               </div>
 
-              {/* Model Field */}
-              <div>
-                <label htmlFor="model" className="block text-sm text-white/70 mb-2">
-                  Model
-                </label>
-                <select
-                  id="model"
-                  name="model"
-                  value={formData.model}
-                  onChange={handleChange}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-white/30 transition-colors"
-                >
-                  <option value="x-black" className="bg-black">X-BLACK</option>
-                  <option value="x-red" className="bg-black">X-RED</option>
-                </select>
-                {errors.model && (
-                  <p className="text-red-400 text-xs mt-1">{errors.model}</p>
-                )}
-              </div>
-
-              {/* Quantity Field */}
-              <div>
-                <label htmlFor="quantity" className="block text-sm text-white/70 mb-2">
-                  Quantity
-                </label>
-                <div className="relative">
-                  <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                  <input
-                    type="number"
-                    id="quantity"
-                    name="quantity"
-                    min={1}
-                    max={5}
-                    value={formData.quantity}
-                    onChange={handleChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg pl-11 pr-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-white/30 transition-colors"
-                    placeholder="1"
-                  />
+              {/* Quantity Fields */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="quantityBlack" className="block text-sm text-white/70 mb-2">
+                    X-BLACK Qty
+                  </label>
+                  <div className="relative">
+                    <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                    <input
+                      type="number"
+                      id="quantityBlack"
+                      name="quantityBlack"
+                      min={0}
+                      max={10}
+                      value={formData.quantityBlack}
+                      onChange={handleChange}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg pl-11 pr-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-white/30 transition-colors"
+                      placeholder="0"
+                    />
+                  </div>
+                  {errors.quantityBlack && (
+                    <p className="text-red-400 text-xs mt-1">{errors.quantityBlack}</p>
+                  )}
                 </div>
-                {errors.quantity && (
-                  <p className="text-red-400 text-xs mt-1">{errors.quantity}</p>
-                )}
+
+                <div>
+                  <label htmlFor="quantityRed" className="block text-sm text-white/70 mb-2">
+                    X-RED Qty
+                  </label>
+                  <div className="relative">
+                    <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                    <input
+                      type="number"
+                      id="quantityRed"
+                      name="quantityRed"
+                      min={0}
+                      max={10}
+                      value={formData.quantityRed}
+                      onChange={handleChange}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg pl-11 pr-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-white/30 transition-colors"
+                      placeholder="0"
+                    />
+                  </div>
+                  {errors.quantityRed && (
+                    <p className="text-red-400 text-xs mt-1">{errors.quantityRed}</p>
+                  )}
+                </div>
               </div>
 
               {/* Submit Button */}

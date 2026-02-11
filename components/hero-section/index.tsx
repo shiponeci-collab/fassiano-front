@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from "lucide-react"
 import { HeroContent } from "./hero-content"
+import { NotifyMeForm } from "../notify-me-form"
 import { Spotlight } from "../ui/spotlight-new"
 
 type ModelId = "x-red" | "x-black"
@@ -52,6 +53,7 @@ export function HeroSection() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [isViewerOpen, setIsViewerOpen] = useState(false)
   const [zoomLevel, setZoomLevel] = useState(1)
+  const [showPreorder, setShowPreorder] = useState(false)
   const activeModel = MODEL_DATA[selectedModel]
   const activeImages = activeModel.images
   const activeImageSrc = buildImageSrc(selectedModel, activeImages[selectedImageIndex])
@@ -112,9 +114,9 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="relative z-10 h-full pt-16 md:pt-20 pb-8 md:pb-16">
+        <div className="relative z-10 h-screen pt-6 pb-6">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
-            <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 md:gap-12 items-center h-full min-h-[calc(100vh-8rem)] md:min-h-[calc(100vh-10rem)]">
+            <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 md:gap-12 items-center h-full">
               <div className="flex flex-col justify-center space-y-6 md:space-y-8 order-2 lg:order-1 text-center lg:text-left">
                 <HeroContent selectedModel={selectedModel} />
               </div>
@@ -184,7 +186,7 @@ export function HeroSection() {
                       <button
                         type="button"
                         onClick={handlePrevImage}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-black/60 p-2 text-white/70 hover:text-white hover:border-white/30 transition"
+                        className="absolute left-3 top-1/2 z-20 -translate-y-1/2 rounded-full border border-white/20 bg-black/70 p-2 text-white/80 hover:text-white hover:border-white/40 transition"
                         aria-label="Previous image"
                       >
                         <ChevronLeft className="h-5 w-5" />
@@ -192,7 +194,7 @@ export function HeroSection() {
                       <button
                         type="button"
                         onClick={handleNextImage}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-black/60 p-2 text-white/70 hover:text-white hover:border-white/30 transition"
+                        className="absolute right-3 top-1/2 z-20 -translate-y-1/2 rounded-full border border-white/20 bg-black/70 p-2 text-white/80 hover:text-white hover:border-white/40 transition"
                         aria-label="Next image"
                       >
                         <ChevronRight className="h-5 w-5" />
@@ -206,7 +208,7 @@ export function HeroSection() {
                       </span>
                     </div>
 
-                    <div className="mt-2 flex gap-3 overflow-x-auto pb-1">
+                    <div className="mt-2 flex gap-2 overflow-x-auto pb-0.5">
                       {activeImages.map((fileName, index) => {
                         const src = buildImageSrc(selectedModel, fileName)
                         const isActive = index === selectedImageIndex
@@ -216,7 +218,7 @@ export function HeroSection() {
                             type="button"
                             onClick={() => setSelectedImageIndex(index)}
                             onDoubleClick={() => openViewer(index)}
-                            className={`relative h-12 w-16 flex-shrink-0 overflow-hidden rounded-xl border transition-all duration-300 ${
+                            className={`relative h-8 w-12 flex-shrink-0 overflow-hidden rounded-md border transition-all duration-300 ${
                               isActive ? "border-white/60" : "border-white/10 hover:border-white/30"
                             }`}
                             aria-label={`Select angle ${index + 1}`}
@@ -226,6 +228,17 @@ export function HeroSection() {
                           </button>
                         )
                       })}
+                    </div>
+
+                    <div className="mt-4 flex items-center justify-between">
+                      <div className="text-[10px] uppercase tracking-[0.3em] text-white/40">Limited pre-order</div>
+                      <button
+                        type="button"
+                        onClick={() => setShowPreorder(true)}
+                        className="rounded-full border border-white/20 bg-white/5 px-5 py-2 text-xs font-semibold tracking-[0.2em] text-white/80 uppercase transition hover:border-white/50 hover:text-white"
+                      >
+                        Pre-order
+                      </button>
                     </div>
                   </div>
                 </motion.div>
@@ -322,6 +335,12 @@ export function HeroSection() {
               </motion.div>
             </motion.div>
           )}
+
+          <NotifyMeForm
+            isOpen={showPreorder}
+            onClose={() => setShowPreorder(false)}
+            selectedModel={selectedModel}
+          />
 
           <motion.div
             className="absolute bottom-4 right-4 sm:right-6 lg:right-8"
