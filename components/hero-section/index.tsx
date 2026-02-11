@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
+import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from "lucide-react"
 import { HeroContent } from "./hero-content"
 import { Spotlight } from "../ui/spotlight-new"
 
@@ -49,13 +50,38 @@ const buildImageSrc = (model: ModelId, fileName: string) => `/${model}/${encodeU
 export function HeroSection() {
   const [selectedModel, setSelectedModel] = useState<ModelId>("x-black")
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
+  const [isViewerOpen, setIsViewerOpen] = useState(false)
+  const [zoomLevel, setZoomLevel] = useState(1)
   const activeModel = MODEL_DATA[selectedModel]
   const activeImages = activeModel.images
   const activeImageSrc = buildImageSrc(selectedModel, activeImages[selectedImageIndex])
 
   useEffect(() => {
     setSelectedImageIndex(0)
+    setZoomLevel(1)
   }, [selectedModel])
+
+  const openViewer = (index: number) => {
+    setSelectedImageIndex(index)
+    setZoomLevel(1)
+    setIsViewerOpen(true)
+  }
+
+  const closeViewer = () => {
+    setIsViewerOpen(false)
+    setZoomLevel(1)
+  }
+
+  const handleZoomIn = () => setZoomLevel(prev => Math.min(prev + 0.25, 2.5))
+  const handleZoomOut = () => setZoomLevel(prev => Math.max(prev - 0.25, 1))
+  const handlePrevImage = () => {
+    setSelectedImageIndex(prev => (prev - 1 + activeImages.length) % activeImages.length)
+    setZoomLevel(1)
+  }
+  const handleNextImage = () => {
+    setSelectedImageIndex(prev => (prev + 1) % activeImages.length)
+    setZoomLevel(1)
+  }
 
   return (
     <>
@@ -149,11 +175,28 @@ export function HeroSection() {
                         key={activeImageSrc}
                         src={activeImageSrc}
                         alt={`${activeModel.name} view ${selectedImageIndex + 1}`}
-                        className="relative z-10 h-full w-full object-cover aspect-[4/3]"
+                        className="relative z-10 h-full w-full object-cover aspect-[4/3] cursor-zoom-in"
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.4 }}
+                        onClick={() => openViewer(selectedImageIndex)}
                       />
+                      <button
+                        type="button"
+                        onClick={handlePrevImage}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-black/60 p-2 text-white/70 hover:text-white hover:border-white/30 transition"
+                        aria-label="Previous image"
+                      >
+                        <ChevronLeft className="h-5 w-5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleNextImage}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-black/60 p-2 text-white/70 hover:text-white hover:border-white/30 transition"
+                        aria-label="Next image"
+                      >
+                        <ChevronRight className="h-5 w-5" />
+                      </button>
                     </div>
 
                     <div className="mt-4 flex items-center justify-between text-xs text-white/50">
@@ -163,7 +206,7 @@ export function HeroSection() {
                       </span>
                     </div>
 
-                    <div className="mt-3 flex gap-3 overflow-x-auto pb-2">
+                    <div className="mt-2 flex gap-3 overflow-x-auto pb-1">
                       {activeImages.map((fileName, index) => {
                         const src = buildImageSrc(selectedModel, fileName)
                         const isActive = index === selectedImageIndex
@@ -172,7 +215,8 @@ export function HeroSection() {
                             key={`${selectedModel}-${fileName}`}
                             type="button"
                             onClick={() => setSelectedImageIndex(index)}
-                            className={`relative h-16 w-20 flex-shrink-0 overflow-hidden rounded-xl border transition-all duration-300 ${
+                            onDoubleClick={() => openViewer(index)}
+                            className={`relative h-12 w-16 flex-shrink-0 overflow-hidden rounded-xl border transition-all duration-300 ${
                               isActive ? "border-white/60" : "border-white/10 hover:border-white/30"
                             }`}
                             aria-label={`Select angle ${index + 1}`}
@@ -189,6 +233,96 @@ export function HeroSection() {
             </div>
           </div>
 
+          {isViewerOpen && (
+            <motion.div
+              className="fixed inset-0 z-[70] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 }}
+              onClick={closeViewer}
+            >
+              <motion.div
+                className="relative w-full max-w-4xl"
+                initial={{ scale: 0.96, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.25 }}
+                onClick={(event) => event.stopPropagation()}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.3em] text-white/50">{activeModel.name}</p>
+                    <p className="text-sm text-white/70">Angle {selectedImageIndex + 1}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={closeViewer}
+                    className="text-white/70 hover:text-white transition-colors"
+                    aria-label="Close viewer"
+                  >
+                    <X className="h-6 w-6" />
+                  </button>
+                </div>
+
+                <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/60">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_60%)]" />
+                  <div className="relative h-[60vh] w-full overflow-hidden">
+                    <img
+                      src={activeImageSrc}
+                      alt={`${activeModel.name} full view ${selectedImageIndex + 1}`}
+                      className="h-full w-full object-contain transition-transform duration-200"
+                      style={{ transform: `scale(${zoomLevel})` }}
+                    />
+                    <button
+                      type="button"
+                      onClick={handlePrevImage}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-black/70 p-2 text-white/80 hover:text-white hover:border-white/30 transition"
+                      aria-label="Previous image"
+                    >
+                      <ChevronLeft className="h-5 w-5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleNextImage}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-black/70 p-2 text-white/80 hover:text-white hover:border-white/30 transition"
+                      aria-label="Next image"
+                    >
+                      <ChevronRight className="h-5 w-5" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3 text-xs text-white/60">
+                    <span>
+                      {selectedImageIndex + 1} / {activeImages.length}
+                    </span>
+                    <span className="hidden sm:inline">Zoom {Math.round(zoomLevel * 100)}%</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={handleZoomOut}
+                      className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-white/80 hover:text-white hover:border-white/30 transition"
+                      aria-label="Zoom out"
+                    >
+                      <ZoomOut className="h-4 w-4" />
+                      <span className="text-xs">Zoom out</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleZoomIn}
+                      className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-white/80 hover:text-white hover:border-white/30 transition"
+                      aria-label="Zoom in"
+                    >
+                      <ZoomIn className="h-4 w-4" />
+                      <span className="text-xs">Zoom in</span>
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+
           <motion.div
             className="absolute bottom-4 right-4 sm:right-6 lg:right-8"
             initial={{ opacity: 0, y: 20 }}
@@ -198,7 +332,7 @@ export function HeroSection() {
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 rounded-full bg-[#e5e4e2] shadow-[0_0_10px_rgba(229,228,226,0.5)]"></div>
               <span
-                className="text-[#e5e4e2] text-xs sm:text-sm font-normal tracking-[0.3em] uppercase"
+                className="text-[#e5e4e2] text-[10px] sm:text-xs font-normal tracking-[0.3em] uppercase"
                 style={{ fontFamily: "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"SF Pro Text\", system-ui, sans-serif" }}
               >
                 Made in Morocco
