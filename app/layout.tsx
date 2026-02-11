@@ -10,15 +10,17 @@ const inter = Inter({
   preload: true,
   fallback: ['-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
   adjustFontFallback: true,
+  weight: ['400', '500', '600', '700'],
 })
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
   display: "swap",
-  preload: true,
+  preload: false,
   fallback: ['Monaco', 'Courier New', 'monospace'],
   adjustFontFallback: true,
+  weight: ['400'],
 })
 
 export const metadata: Metadata = {
@@ -110,20 +112,43 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preload" as="image" href="/_next/image?url=%2Fbrand-logohero.png&w=256&q=80" fetchPriority="high" />
+        <link rel="preload" as="image" href="/_next/image?url=%2Fx-black%2FArtboard%201.jpg&w=828&q=75" fetchPriority="high" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <meta name="theme-color" content="#000000" />
         <meta name="color-scheme" content="dark light" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-        />
+        <style dangerouslySetInnerHTML={{__html: `
+          *,::before,::after{box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}
+          html{line-height:1.5;-webkit-text-size-adjust:100%;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif}
+          body{margin:0;line-height:inherit}
+          .bg-\[\#080808\]{background-color:#080808}
+          .bg-black{background-color:#000}
+          .text-white{color:#fff}
+          .min-h-screen{min-height:100vh}
+          .relative{position:relative}
+          .absolute{position:absolute}
+          .overflow-hidden{overflow:hidden}
+          .flex{display:flex}
+          .grid{display:grid}
+          .hidden{display:none}
+          .antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+          .font-sans{font-family:var(--font-sans),ui-sans-serif,system-ui,sans-serif}
+          .inset-0{inset:0}
+          .z-10{z-index:10}
+          .justify-center{justify-content:center}
+          .items-center{align-items:center}
+          .space-y-6>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}
+          @media (min-width:768px){.md\\:space-y-8>:not([hidden])~:not([hidden]){margin-top:calc(2rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2rem * var(--tw-space-y-reverse))}}
+        `}} />
       </head>
       <body 
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased bg-black`}
         suppressHydrationWarning
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
         {children}
       </body>
     </html>

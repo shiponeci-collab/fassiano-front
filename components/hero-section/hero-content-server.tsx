@@ -1,5 +1,4 @@
 import Image from "next/image"
-import { motion } from "framer-motion"
 import { PRODUCT_INFO } from "./constants"
 import { PreorderButton } from "./preorder-button"
 

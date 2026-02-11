@@ -10,13 +10,13 @@ const NotifyMeForm = lazy(() => import("../notify-me-form").then(mod => ({ defau
 type ModelId = "x-red" | "x-black"
 
 interface ImageGalleryProps {
-  modelData: Record<ModelId, { name: string; description: string; accent: string; dot: string; images: string[] }>
+  modelData: Record<ModelId, { name: string; description: string; accent: string; dot: string; price: string; originalPrice: string; images: string[] }>
 }
 
 const buildImageSrc = (model: ModelId, fileName: string) => `/${model}/${encodeURIComponent(fileName)}`
 
 export function ImageGallery({ modelData }: ImageGalleryProps) {
-  const [selectedModel, setSelectedModel] = useState<ModelId>("x-black")
+  const [selectedModel, setSelectedModel] = useState<ModelId>("x-red")
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [isViewerOpen, setIsViewerOpen] = useState(false)
   const [showPreorder, setShowPreorder] = useState(false)
@@ -42,15 +42,18 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
       <div className="rounded-[2rem] border border-white/10 bg-white/5 backdrop-blur-2xl p-6 sm:p-8 shadow-[0_30px_80px_rgba(0,0,0,0.55)]">
         <div className="flex items-start justify-between gap-6">
           <div>
-            <p className="text-xs uppercase tracking-[0.35em] text-white/45">Signature Models</p>
+            <p className="text-xs uppercase tracking-[0.35em] text-white/45">Limited Edition</p>
             <h3 className={`mt-2 text-2xl sm:text-3xl font-semibold tracking-tight bg-gradient-to-b ${activeModel.accent} bg-clip-text text-transparent`}>
               {activeModel.name}
             </h3>
             <p className="mt-2 text-sm text-white/60 max-w-sm">{activeModel.description}</p>
           </div>
-          <div className="hidden sm:flex flex-col items-end text-right">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-white/40">Limited Drop</span>
-            <span className="mt-2 text-xs text-white/60">Hand-numbered pairs</span>
+          <div className="flex flex-col items-end text-right">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-white/40 line-through">{activeModel.originalPrice}</span>
+              <span className="text-2xl sm:text-3xl font-bold text-white">{activeModel.price}</span>
+            </div>
+            <span className="mt-1 text-[8px] uppercase tracking-[0.3em] text-green-400">Pre-order 20% off</span>
           </div>
         </div>
 
@@ -66,9 +69,9 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
                 onClick={() => setSelectedModel(modelId)}
                 aria-label={`Select ${model.name} model`}
                 aria-pressed={isActive}
-                className={`group flex items-center justify-between rounded-2xl border px-4 py-3 text-left transition-all duration-300 ${
+                className={`group flex items-center justify-between rounded-2xl border-2 px-4 py-3 text-left transition-all duration-300 ${
                   isActive
-                    ? "border-white/40 bg-white/10 shadow-[0_12px_30px_rgba(0,0,0,0.45)]"
+                    ? "border-[#e5e4e2] bg-white/10 shadow-[0_8px_24px_rgba(229,228,226,0.25)]"
                     : "border-white/10 bg-white/5 hover:border-white/25 hover:bg-white/10"
                 }`}
               >
@@ -83,12 +86,12 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
         </div>
 
         {/* Main Image */}
-        <div className="mt-6 relative overflow-hidden rounded-2xl border border-white/10 bg-black/40">
+        <div className="mt-6 relative overflow-hidden rounded-2xl border border-white/10 bg-black/40 aspect-[4/3]">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_60%)]" />
           <button
             type="button"
             onClick={() => setIsViewerOpen(true)}
-            className="relative z-10 aspect-[4/3] w-full cursor-zoom-in block"
+            className="relative z-10 w-full h-full cursor-zoom-in block"
             aria-label={`View ${activeModel.name} in full screen`}
           >
             <Image
@@ -97,9 +100,13 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
               alt={`${activeModel.name} premium sneaker - view ${selectedImageIndex + 1} of ${activeImages.length}`}
               fill
               priority={selectedImageIndex === 0}
-              fetchPriority={selectedImageIndex === 0 ? "high" : undefined}
-              sizes="(max-width: 1024px) 90vw, 45vw"
+              quality={selectedImageIndex === 0 ? 75 : 60}
+              sizes="(max-width: 640px) 85vw, (max-width: 1024px) 45vw, 40vw"
               className="object-cover transition-opacity duration-300"
+              loading={selectedImageIndex === 0 ? "eager" : "lazy"}
+              fetchPriority={selectedImageIndex === 0 ? "high" : "low"}
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA3oAA//9k="
             />
           </button>
           <button
@@ -148,6 +155,7 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
                   height={64}
                   sizes="48px"
                   loading="lazy"
+                  quality={60}
                   className="h-full w-full object-cover"
                   aria-hidden="true"
                 />

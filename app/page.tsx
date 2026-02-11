@@ -13,7 +13,7 @@ import { FassianoHeroParallax } from "@/components/fassiano-hero-parallax"
 
 export default function Home() {
   return (
-    <main className="min-h-screen" role="main">
+    <main className="min-h-screen bg-[#080808]" role="main">
       {/* 1. HOOK - Brand Introduction & First Impression - SERVER COMPONENT with PPR */}
       <Suspense fallback={<HeroFallback />}>
         <HeroSectionServer />

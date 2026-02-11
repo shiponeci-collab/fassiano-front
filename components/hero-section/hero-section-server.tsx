@@ -4,12 +4,14 @@ import { HeroContentStatic } from "./hero-content-static"
 
 type ModelId = "x-red" | "x-black"
 
-const MODEL_DATA: Record<ModelId, { name: string; description: string; accent: string; dot: string; images: string[] }> = {
+const MODEL_DATA: Record<ModelId, { name: string; description: string; accent: string; dot: string; price: string; originalPrice: string; images: string[] }> = {
   "x-black": {
     name: "X-BLACK",
     description: "Stealth heritage leather with deep noir finish.",
     accent: "from-zinc-100 via-zinc-300 to-zinc-500",
     dot: "bg-black shadow-[0_0_12px_rgba(255,255,255,0.4)]",
+    price: "$79",
+    originalPrice: "$99",
     images: [
       "Artboard 1.jpg",
       "Artboard 4.jpg",
@@ -27,6 +29,8 @@ const MODEL_DATA: Record<ModelId, { name: string; description: string; accent: s
     description: "Crimson heritage leather with a bold artisan glow.",
     accent: "from-rose-200 via-red-300 to-amber-300",
     dot: "bg-red-400",
+    price: "$79",
+    originalPrice: "$99",
     images: [
       "Artboard 6.jpg",
       "Artboard 8.jpg",
@@ -75,12 +79,12 @@ export function HeroSectionServer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 md:gap-12 items-center">
             {/* Left Column - Static Content with CSS Animations */}
-            <article className="flex flex-col justify-center space-y-6 md:space-y-8 order-2 lg:order-1 text-center lg:text-left">
+            <article className="flex flex-col justify-center space-y-6 md:space-y-8 order-2 lg:order-1 text-center lg:text-left min-h-[400px] lg:min-h-[500px]" style={{ willChange: 'auto' }}>
               <HeroContentStatic />
             </article>
 
             {/* Right Column - Interactive Gallery */}
-            <div className="flex items-center justify-center order-1 lg:order-2 py-8 lg:py-0 mt-2 sm:mt-8 md:mt-12 lg:mt-0">
+            <div className="flex items-center justify-center order-1 lg:order-2 py-8 lg:py-0 mt-2 sm:mt-8 md:mt-12 lg:mt-20">
               <div className="w-full max-w-xl">
                 <Suspense fallback={<GalleryFallback />}>
                   <ImageGallery modelData={MODEL_DATA} />

@@ -18,11 +18,11 @@ export function HeroContentStatic() {
               width={284}
               height={96}
               priority
-              fetchPriority="high"
-              quality={100}
-              sizes="(max-width: 768px) 180px, (max-width: 1024px) 240px, 284px"
+              quality={80}
+              sizes="(max-width: 640px) 180px, (max-width: 768px) 200px, (max-width: 1024px) 240px, 284px"
               className="h-12 sm:h-14 md:h-16 lg:h-20 xl:h-24 w-auto object-contain filter brightness-0 invert"
-              style={{ maxWidth: '100%', height: 'auto' }}
+              style={{ maxWidth: '284px', height: 'auto' }}
+              fetchPriority="high"
             />
           </div>
         </div>
@@ -44,7 +44,7 @@ export function HeroContentStatic() {
         <div className="flex items-center gap-3">
           <span className="text-xs uppercase tracking-[0.3em] text-white/50">Selected</span>
           <span className="rounded-full border border-white/15 bg-white/5 px-4 py-1 text-sm font-semibold tracking-wide text-white">
-            X-BLACK
+            X-RED
           </span>
         </div>
       </header>

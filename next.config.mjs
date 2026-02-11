@@ -5,12 +5,14 @@ const nextConfig = {
   },
   images: {
     formats: ["image/avif", "image/webp"],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 60,
+    deviceSizes: [640, 750, 828, 1080],
+    imageSizes: [16, 32, 48, 64, 96, 128, 180, 256],
+    minimumCacheTTL: 31536000,
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
-    qualities: [100, 75],
+    remotePatterns: [],
+    unoptimized: false,
+    loader: 'default',
   },
   // Enable compiler optimizations
   compiler: {
@@ -18,17 +20,20 @@ const nextConfig = {
   },
   // Optimize production builds
   productionBrowserSourceMaps: false,
-  // Enable Partial Prerendering
-  cacheComponents: true,
+  compress: true,
   // Reduce bundle size and improve performance
   experimental: {
-    optimizePackageImports: ['framer-motion', 'lucide-react', '@radix-ui/react-icons', '@tabler/icons-react'],
+    optimizePackageImports: ['framer-motion', 'lucide-react', '@radix-ui/react-icons', '@tabler/icons-react', '@radix-ui/react-dialog', '@radix-ui/react-popover'],
     optimizeCss: true,
+    webpackBuildWorker: true,
+    parallelServerCompiles: true,
+    parallelServerBuildTraces: true,
+    cssChunking: 'strict',
   },
   // Improve loading performance
   poweredByHeader: false,
   reactStrictMode: true,
-  // Add security headers for best practices
+  // Add security and performance headers
   async headers() {
     return [
       {
@@ -57,6 +62,28 @@ const nextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()'
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          }
+        ]
+      },
+      {
+        source: '/fonts/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          }
+        ]
+      },
+      {
+        source: '/_next/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
           }
         ]
       }
