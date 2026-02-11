@@ -114,14 +114,14 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="relative z-10 h-screen pt-6 pb-6">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
-            <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 md:gap-12 items-center h-full">
+        <div className="relative z-10 min-h-screen pt-6 pb-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 md:gap-12 items-center">
               <div className="flex flex-col justify-center space-y-6 md:space-y-8 order-2 lg:order-1 text-center lg:text-left">
                 <HeroContent selectedModel={selectedModel} />
               </div>
 
-              <div className="flex items-center justify-center order-1 lg:order-2 py-8 lg:py-0 mt-8 sm:mt-12 md:mt-16 lg:mt-0">
+              <div className="flex items-center justify-center order-1 lg:order-2 py-8 lg:py-0 mt-2 sm:mt-8 md:mt-12 lg:mt-0">
                 <motion.div
                   className="w-full max-w-xl"
                   initial={{ opacity: 0, y: 30 }}
@@ -343,13 +343,12 @@ export function HeroSection() {
           />
 
           <motion.div
-            className="absolute bottom-4 right-4 sm:right-6 lg:right-8"
+            className="mt-6 flex justify-center lg:absolute lg:bottom-4 lg:left-4 lg:justify-start"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.1 }}
           >
             <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 rounded-full bg-[#e5e4e2] shadow-[0_0_10px_rgba(229,228,226,0.5)]"></div>
               <span
                 className="text-[#e5e4e2] text-[10px] sm:text-xs font-normal tracking-[0.3em] uppercase"
                 style={{ fontFamily: "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"SF Pro Text\", system-ui, sans-serif" }}
