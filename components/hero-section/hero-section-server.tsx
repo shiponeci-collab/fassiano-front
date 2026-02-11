@@ -10,8 +10,8 @@ const MODEL_DATA: Record<ModelId, { name: string; description: string; accent: s
     description: "Stealth heritage leather with deep noir finish.",
     accent: "from-zinc-100 via-zinc-300 to-zinc-500",
     dot: "bg-black shadow-[0_0_12px_rgba(255,255,255,0.4)]",
-    price: "$79",
-    originalPrice: "$99",
+    price: "790 MAD",
+    originalPrice: "990",
     images: [
       "Artboard 1.jpg",
       "Artboard 4.jpg",
@@ -29,8 +29,8 @@ const MODEL_DATA: Record<ModelId, { name: string; description: string; accent: s
     description: "Crimson heritage leather with a bold artisan glow.",
     accent: "from-rose-200 via-red-300 to-amber-300",
     dot: "bg-red-400",
-    price: "$79",
-    originalPrice: "$99",
+    price: "790 MAD",
+    originalPrice: "990",
     images: [
       "Artboard 6.jpg",
       "Artboard 8.jpg",

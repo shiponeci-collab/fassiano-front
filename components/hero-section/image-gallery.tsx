@@ -49,9 +49,12 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
             <p className="mt-2 text-sm text-white/60 max-w-sm">{activeModel.description}</p>
           </div>
           <div className="flex flex-col items-end text-right">
-            <div className="flex items-center gap-2">
+            <div className="flex items-baseline gap-2">
               <span className="text-sm text-white/40 line-through">{activeModel.originalPrice}</span>
-              <span className="text-2xl sm:text-3xl font-bold text-white">{activeModel.price}</span>
+              <div className="flex items-start gap-1">
+                <span className="text-2xl sm:text-3xl font-bold text-white">{activeModel.price.split(' ')[0]}</span>
+                <span className="text-[10px] text-white/60 font-medium mt-0.5">{activeModel.price.split(' ')[1]}</span>
+              </div>
             </div>
             <span className="mt-1 text-[8px] uppercase tracking-[0.3em] text-green-400">Pre-order 20% off</span>
           </div>
