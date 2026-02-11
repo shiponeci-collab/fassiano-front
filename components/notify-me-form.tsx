@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, Mail, User, Phone, Loader2, MapPin, Hash } from "lucide-react"
+import { submitPreorder } from "@/app/actions/submit-preorder"
 
 interface NotifyMeFormProps {
   isOpen: boolean
@@ -82,29 +83,14 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
     setSubmitStatus("idle")
 
     try {
-      // Google Apps Script Web App URL from environment variable
-      const GOOGLE_SCRIPT_URL = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL || ""
-
-      if (!GOOGLE_SCRIPT_URL) {
-        throw new Error("Google Script URL not configured")
-      }
-
-      const response = await fetch(GOOGLE_SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors", // Required for Google Apps Script
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          address: formData.address,
-          quantity_black: Number.parseInt(formData.quantityBlack, 10),
-          quantity_red: Number.parseInt(formData.quantityRed, 10),
-          total_quantity: Number.parseInt(formData.quantityBlack, 10) + Number.parseInt(formData.quantityRed, 10),
-          timestamp: new Date().toISOString()
-        })
+      await submitPreorder({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        quantity_black: Number.parseInt(formData.quantityBlack, 10),
+        quantity_red: Number.parseInt(formData.quantityRed, 10),
+        total_quantity: Number.parseInt(formData.quantityBlack, 10) + Number.parseInt(formData.quantityRed, 10),
       })
 
       // With no-cors, we can't read the response, so we assume success
