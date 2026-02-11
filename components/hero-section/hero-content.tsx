@@ -5,8 +5,16 @@ import { motion } from "framer-motion"
 import { PRODUCT_INFO } from "./constants"
 import { NotifyMeForm } from "../notify-me-form"
 
-export function HeroContent() {
+type ModelId = "x-red" | "x-black"
+
+interface HeroContentProps {
+  selectedModel: ModelId
+}
+
+export function HeroContent({ selectedModel }: HeroContentProps) {
   const [showNotifyForm, setShowNotifyForm] = useState(false)
+  const modelLabel = selectedModel === "x-red" ? "X-RED" : "X-BLACK"
+  const heroFont = "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"SF Pro Text\", system-ui, sans-serif"
   return (
     <motion.div
       className="text-left space-y-8"
@@ -38,28 +46,30 @@ export function HeroContent() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 1.0 }}
         >
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-light text-white/90 tracking-wide" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif' }}>
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-light text-white/90 tracking-wide" style={{ fontFamily: heroFont }}>
             Moroccan Heritage
           </h2>
           
-          <p className="text-white/70 text-base sm:text-lg font-light max-w-lg" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif' }}>
+          <p className="text-white/70 text-base sm:text-lg font-light max-w-lg" style={{ fontFamily: heroFont }}>
             Handcrafted by master artisans
           </p>
           
           <div className="w-16 h-px bg-gradient-to-r from-red-400 to-red-600" />
         </motion.div>
 
-        {/* Pricing - Minimal */}
-        <motion.div 
-          className="space-y-1"
+        {/* Selected Model */}
+        <motion.div
+          className="flex items-center gap-3"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 1.3 }}
+          transition={{ duration: 0.8, delay: 1.2 }}
         >
-          <p className="text-2xl sm:text-3xl font-semibold text-white" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif' }}>
-            <span className="text-transparent bg-gradient-to-r from-red-400 to-red-600 bg-clip-text">Coming Soon</span>
-          </p>
+          <span className="text-xs uppercase tracking-[0.3em] text-white/50">Selected</span>
+          <span className="rounded-full border border-white/15 bg-white/5 px-4 py-1 text-sm font-semibold tracking-wide text-white">
+            {modelLabel}
+          </span>
         </motion.div>
+
       </div>
 
       {/* Single CTA - Teaser */}
@@ -71,7 +81,7 @@ export function HeroContent() {
       >
         <motion.button
           className="group relative bg-gradient-to-r from-red-500 to-red-600 text-white px-6 sm:px-8 py-3 sm:py-4 text-sm sm:text-base font-medium tracking-wide rounded-full overflow-hidden transition-all duration-300 w-full sm:w-auto cursor-pointer"
-          style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif' }}
+          style={{ fontFamily: heroFont }}
           onClick={() => setShowNotifyForm(true)}
           whileHover={{ 
             y: -2,
@@ -79,7 +89,7 @@ export function HeroContent() {
           }}
           whileTap={{ scale: 0.98 }}
         >
-          <span className="relative z-10">NOTIFY ME</span>
+          <span className="relative z-10">Pre-order</span>
           <motion.div
             className="absolute inset-0 bg-gradient-to-r from-red-400 to-red-500"
             initial={{ x: "-100%" }}
@@ -90,7 +100,11 @@ export function HeroContent() {
       </motion.div>
 
       {/* Notify Me Form Modal */}
-      <NotifyMeForm isOpen={showNotifyForm} onClose={() => setShowNotifyForm(false)} />
+      <NotifyMeForm
+        isOpen={showNotifyForm}
+        onClose={() => setShowNotifyForm(false)}
+        selectedModel={selectedModel}
+      />
 
       {/* Minimal Features - Teaser */}
       <motion.div

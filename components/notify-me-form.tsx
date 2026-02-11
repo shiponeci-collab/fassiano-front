@@ -1,24 +1,35 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { X, Mail, User, Phone, Loader2, MapPin } from "lucide-react"
+import { X, Mail, User, Phone, Loader2, MapPin, Hash } from "lucide-react"
 
 interface NotifyMeFormProps {
   isOpen: boolean
   onClose: () => void
+  selectedModel?: "x-red" | "x-black"
 }
 
-export function NotifyMeForm({ isOpen, onClose }: NotifyMeFormProps) {
+export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormProps) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    address: ""
+    address: "",
+    model: selectedModel ?? "x-black",
+    quantity: "1"
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    if (!isOpen || !selectedModel) return
+    setFormData(prev => ({
+      ...prev,
+      model: selectedModel
+    }))
+  }, [isOpen, selectedModel])
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
@@ -39,6 +50,15 @@ export function NotifyMeForm({ isOpen, onClose }: NotifyMeFormProps) {
 
     if (!formData.address.trim()) {
       newErrors.address = "Address is required"
+    }
+
+    if (!formData.model.trim()) {
+      newErrors.model = "Please select a model"
+    }
+
+    const quantityValue = Number.parseInt(formData.quantity, 10)
+    if (Number.isNaN(quantityValue) || quantityValue < 1) {
+      newErrors.quantity = "Quantity must be at least 1"
     }
 
     setErrors(newErrors)
@@ -72,13 +92,22 @@ export function NotifyMeForm({ isOpen, onClose }: NotifyMeFormProps) {
           email: formData.email,
           phone: formData.phone,
           address: formData.address,
+          model: formData.model,
+          quantity: Number.parseInt(formData.quantity, 10),
           timestamp: new Date().toISOString()
         })
       })
 
       // With no-cors, we can't read the response, so we assume success
       setSubmitStatus("success")
-      setFormData({ name: "", email: "", phone: "", address: "" })
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        address: "",
+        model: selectedModel ?? "x-black",
+        quantity: "1"
+      })
       
       // Close form after 2 seconds
       setTimeout(() => {
@@ -94,7 +123,7 @@ export function NotifyMeForm({ isOpen, onClose }: NotifyMeFormProps) {
     }
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
     // Clear error when user starts typing
@@ -132,9 +161,9 @@ export function NotifyMeForm({ isOpen, onClose }: NotifyMeFormProps) {
 
             {/* Header */}
             <div className="mb-6">
-              <h2 className="text-2xl font-semibold text-white mb-2">Get Notified</h2>
+              <h2 className="text-2xl font-semibold text-white mb-2">Pre-order Request</h2>
               <p className="text-white/60 text-sm">
-                Be the first to know when X-RED drops
+                Reserve your pair with your preferred model and quantity
               </p>
             </div>
 
@@ -228,6 +257,50 @@ export function NotifyMeForm({ isOpen, onClose }: NotifyMeFormProps) {
                 )}
               </div>
 
+              {/* Model Field */}
+              <div>
+                <label htmlFor="model" className="block text-sm text-white/70 mb-2">
+                  Model
+                </label>
+                <select
+                  id="model"
+                  name="model"
+                  value={formData.model}
+                  onChange={handleChange}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-white/30 transition-colors"
+                >
+                  <option value="x-black" className="bg-black">X-BLACK</option>
+                  <option value="x-red" className="bg-black">X-RED</option>
+                </select>
+                {errors.model && (
+                  <p className="text-red-400 text-xs mt-1">{errors.model}</p>
+                )}
+              </div>
+
+              {/* Quantity Field */}
+              <div>
+                <label htmlFor="quantity" className="block text-sm text-white/70 mb-2">
+                  Quantity
+                </label>
+                <div className="relative">
+                  <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                  <input
+                    type="number"
+                    id="quantity"
+                    name="quantity"
+                    min={1}
+                    max={5}
+                    value={formData.quantity}
+                    onChange={handleChange}
+                    className="w-full bg-white/5 border border-white/10 rounded-lg pl-11 pr-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-white/30 transition-colors"
+                    placeholder="1"
+                  />
+                </div>
+                {errors.quantity && (
+                  <p className="text-red-400 text-xs mt-1">{errors.quantity}</p>
+                )}
+              </div>
+
               {/* Submit Button */}
               <button
                 type="submit"
@@ -240,7 +313,7 @@ export function NotifyMeForm({ isOpen, onClose }: NotifyMeFormProps) {
                     Submitting...
                   </>
                 ) : (
-                  "Notify Me"
+                  "Pre-order"
                 )}
               </button>
 
@@ -251,7 +324,7 @@ export function NotifyMeForm({ isOpen, onClose }: NotifyMeFormProps) {
                   animate={{ opacity: 1, y: 0 }}
                   className="text-center text-green-400 text-sm"
                 >
-                  ✓ You're on the list! We'll notify you soon.
+                  ✓ Pre-order received. We'll contact you to confirm.
                 </motion.div>
               )}
 

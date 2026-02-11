@@ -124,7 +124,7 @@ export function Navigation() {
                 className="w-full px-6 py-3 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white font-medium rounded-full border-0"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Pre-order Now
+                Pre-order
               </Button>
             </div>
           </div>

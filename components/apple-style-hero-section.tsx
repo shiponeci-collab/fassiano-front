@@ -170,7 +170,7 @@ export function AppleStyleHeroSection() {
                     size="lg"
                     className="px-12 py-4 lg:px-16 lg:py-5 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white font-semibold text-lg lg:text-xl rounded-full shadow-2xl shadow-red-500/25 transition-all duration-500 hover:scale-105 hover:shadow-red-500/40 border-0"
                   >
-                    Pre-order Now
+                    Pre-order
                   </Button>
                   <Button
                     variant="outline"
