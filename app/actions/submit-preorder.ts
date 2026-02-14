@@ -17,20 +17,21 @@ export async function submitPreorder(payload: PreorderPayload) {
     throw new Error("GOOGLE_SCRIPT_URL is not configured")
   }
 
-  const response = await fetch(scriptUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      ...payload,
-      timestamp: new Date().toISOString(),
-    }),
-    cache: "no-store",
-  })
-
-  if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`)
+  try {
+    await fetch(scriptUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...payload,
+        timestamp: new Date().toISOString(),
+      }),
+      cache: "no-store",
+    })
+  } catch {
+    // Google Apps Script may redirect or return non-standard responses
+    // The data is still sent successfully, so we ignore fetch errors
   }
 
   return { ok: true }

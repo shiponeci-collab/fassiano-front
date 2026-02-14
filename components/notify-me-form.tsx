@@ -336,7 +336,7 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
             <AnimatePresence>
               {submitStatus === "success" && (
                 <motion.div
-                  className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-black/90 p-6 text-center"
+                  className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-black/90 p-6 text-center shadow-[0_30px_80px_rgba(0,0,0,0.65)]"
                   initial={{ opacity: 0, scale: 0.98 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.98 }}
@@ -344,7 +344,7 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
                 >
                   <div className="space-y-4">
                     <div className="text-sm uppercase tracking-[0.3em] text-green-400">Order Sent</div>
-                    <p className="text-white text-base font-semibold">
+                    <p className="text-white text-base font-semibold md:whitespace-nowrap">
                       Thank you{submittedName ? ` ${submittedName}` : ""}. Your order has been sent to our team.
                     </p>
                     <p className="text-white/70 text-sm leading-relaxed">
