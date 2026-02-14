@@ -354,7 +354,7 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
                     <button
                       type="button"
                       onClick={handleClose}
-                      className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 px-5 py-2 text-xs font-semibold tracking-[0.2em] text-white/80 uppercase transition hover:border-white/50 hover:text-white"
+                      className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-red-600 to-red-700 border border-red-500/50 px-5 py-2 text-xs font-semibold tracking-[0.2em] text-white uppercase transition-all duration-200 hover:from-red-500 hover:to-red-600 hover:border-red-400 hover:shadow-[0_0_20px_rgba(239,68,68,0.4)]"
                     >
                       Close
                     </button>

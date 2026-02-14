@@ -18,8 +18,8 @@ export function HeroContentStatic() {
               width={284}
               height={96}
               priority
-              quality={80}
-              sizes="(max-width: 640px) 180px, (max-width: 768px) 200px, (max-width: 1024px) 240px, 284px"
+              quality={75}
+              sizes="284px"
               className="h-12 sm:h-14 md:h-16 lg:h-20 xl:h-24 w-auto object-contain filter brightness-0 invert"
               style={{ maxWidth: '284px', height: 'auto' }}
               fetchPriority="high"

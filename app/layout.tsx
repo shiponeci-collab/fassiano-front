@@ -112,8 +112,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="preload" as="image" href="/_next/image?url=%2Fbrand-logohero.png&w=256&q=80" fetchPriority="high" />
-        <link rel="preload" as="image" href="/_next/image?url=%2Fx-black%2FArtboard%201.jpg&w=828&q=75" fetchPriority="high" />
+        <link rel="preload" as="image" href="/_next/image?url=%2Fbrand-logohero.png&w=256&q=75" fetchPriority="high" />
+        <link rel="preload" as="image" href="/_next/image?url=%2Fx-red%2FArtboard%206.jpg&w=828&q=75" fetchPriority="high" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <meta name="theme-color" content="#000000" />
         <meta name="color-scheme" content="dark light" />
