@@ -101,7 +101,7 @@ export function HeroSectionServer() {
             </article>
 
             {/* Right Column - Interactive Gallery */}
-            <div className="flex items-center justify-center order-1 lg:order-2 py-8 lg:py-0 mt-2 sm:mt-8 md:mt-12 lg:mt-20">
+            <div className="flex items-center justify-center order-1 lg:order-2 py-8 lg:py-0 mt-2 sm:mt-8 md:mt-4 lg:mt-4 2xl:mt-16">
               <div className="w-full max-w-xl drop-shadow-[0_35px_50px_rgba(0,0,0,0.7)]">
                 <Suspense fallback={<GalleryFallback />}>
                   <ImageGallery modelData={MODEL_DATA} />

@@ -40,13 +40,6 @@ export function HeroContentStatic() {
           <div className="w-16 h-px bg-gradient-to-r from-red-400 to-red-600" />
         </div>
 
-        {/* Selected Model - Static */}
-        <div className="flex items-center gap-3">
-          <span className="text-xs uppercase tracking-[0.3em] text-white/50">Selected</span>
-          <span className="rounded-full border border-white/15 bg-white/5 px-4 py-1 text-sm font-semibold tracking-wide text-white">
-            X-RED
-          </span>
-        </div>
       </header>
 
       {/* CTA Button - Client Component Only */}

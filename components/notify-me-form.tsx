@@ -20,6 +20,7 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
     quantityBlack: "0",
     quantityRed: "0"
   })
+  const [submittedName, setSubmittedName] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -94,6 +95,7 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
       })
 
       // With no-cors, we can't read the response, so we assume success
+      setSubmittedName(formData.name.trim())
       setSubmitStatus("success")
       setFormData({
         name: "",
@@ -104,11 +106,7 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
         quantityRed: selectedModel === "x-red" ? "1" : "0"
       })
       
-      // Close form after 2 seconds
-      setTimeout(() => {
-        onClose()
-        setSubmitStatus("idle")
-      }, 2000)
+      // Keep success state visible until the user closes the modal
 
     } catch (error) {
       console.error("Error submitting form:", error)
@@ -127,6 +125,12 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
     }
   }
 
+  const handleClose = () => {
+    setSubmitStatus("idle")
+    setSubmittedName("")
+    onClose()
+  }
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -136,7 +140,7 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          onClick={onClose}
+          onClick={handleClose}
         >
           <motion.div
             className="relative w-full max-w-md bg-gradient-to-b from-zinc-900 to-black border border-white/10 border-t-white/20 rounded-2xl p-8 shadow-[0_-25px_60px_rgba(0,0,0,0.55),0_25px_60px_rgba(0,0,0,0.55)]"
@@ -149,7 +153,7 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
             {/* Close Button */}
             <button
               className="absolute top-4 right-4 text-white/60 hover:text-white transition-colors cursor-pointer"
-              onClick={onClose}
+              onClick={handleClose}
             >
               <X className="w-6 h-6" />
             </button>
@@ -317,17 +321,7 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
                 )}
               </button>
 
-              {/* Success/Error Messages */}
-              {submitStatus === "success" && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-center text-green-400 text-sm"
-                >
-                  ✓ Pre-order received. We'll contact you to confirm.
-                </motion.div>
-              )}
-
+              {/* Error Message */}
               {submitStatus === "error" && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
@@ -338,6 +332,36 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
                 </motion.div>
               )}
             </form>
+
+            <AnimatePresence>
+              {submitStatus === "success" && (
+                <motion.div
+                  className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-black/90 p-6 text-center"
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="space-y-4">
+                    <div className="text-sm uppercase tracking-[0.3em] text-green-400">Order Sent</div>
+                    <p className="text-white text-base font-semibold">
+                      Thank you{submittedName ? ` ${submittedName}` : ""}. Your order has been sent to our team.
+                    </p>
+                    <p className="text-white/70 text-sm leading-relaxed">
+                      You have just acquired a piece of elegance, inspired by Moroccan artisanal craftsmanship, designed for men who move forward with distinction.
+                    </p>
+                    <p className="text-white/70 text-sm">Hassan Elouardy</p>
+                    <button
+                      type="button"
+                      onClick={handleClose}
+                      className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/5 px-5 py-2 text-xs font-semibold tracking-[0.2em] text-white/80 uppercase transition hover:border-white/50 hover:text-white"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         </motion.div>
       )}
