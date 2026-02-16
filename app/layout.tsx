@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Inter, JetBrains_Mono } from "next/font/google"
+import { GoogleTagManager, GoogleTagManagerNoscript } from "@/components/google-analytics"
 import "./globals.css"
 
 const inter = Inter({
@@ -140,11 +141,13 @@ export default function RootLayout({
           .space-y-6>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}
           @media (min-width:768px){.md\\:space-y-8>:not([hidden])~:not([hidden]){margin-top:calc(2rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2rem * var(--tw-space-y-reverse))}}
         `}} />
+        <GoogleTagManager />
       </head>
       <body 
         className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased bg-black`}
         suppressHydrationWarning
       >
+        <GoogleTagManagerNoscript />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
