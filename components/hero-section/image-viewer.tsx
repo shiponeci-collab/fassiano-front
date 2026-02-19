@@ -4,7 +4,7 @@ import { useState } from "react"
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react"
 import Image from "next/image"
 
-type ModelId = "x-red" | "x-black"
+import { ModelId } from "./types"
 
 interface ImageViewerProps {
   isOpen: boolean

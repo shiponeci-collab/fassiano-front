@@ -4,8 +4,7 @@ import { useState, lazy, Suspense } from "react"
 import { motion } from "framer-motion"
 
 const NotifyMeForm = lazy(() => import("../notify-me-form").then(mod => ({ default: mod.NotifyMeForm })))
-
-type ModelId = "x-red" | "x-black"
+import { ModelId } from "./types"
 
 interface PreorderButtonProps {
   selectedModel: ModelId

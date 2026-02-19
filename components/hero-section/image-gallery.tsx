@@ -3,11 +3,10 @@
 import { useState, useEffect, lazy, Suspense } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import Image from "next/image"
+import { ModelId } from "./types"
 
 const ImageViewer = lazy(() => import("./image-viewer"))
 const NotifyMeForm = lazy(() => import("../notify-me-form").then(mod => ({ default: mod.NotifyMeForm })))
-
-type ModelId = "x-red" | "x-black"
 
 interface ImageGalleryProps {
   modelData: Record<ModelId, { name: string; description: string; accent: string; dot: string; price: string; originalPrice: string; images: string[] }>
@@ -40,6 +39,8 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
   // Dynamic card colors based on selected model
   const cardColors = selectedModel === "x-red" 
     ? "border-red-500/40 border-t-red-400/60 bg-gradient-to-b from-red-950/50 to-black/80" 
+    : selectedModel === "majestic"
+    ? "border-amber-500/40 border-t-amber-400/60 bg-gradient-to-b from-amber-950/40 to-black/90"
     : "border-zinc-600/50 border-t-zinc-400/70 bg-gradient-to-b from-zinc-900/70 to-black/90"
 
   return (
@@ -68,8 +69,8 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
         <p className="mt-3 text-xs sm:text-sm text-white/60 leading-tight">{activeModel.description}</p>
 
         {/* Model Selector */}
-        <div className="mt-6 grid grid-cols-2 gap-3">
-          {(["x-red", "x-black"] as const).map((modelId) => {
+        <div className="mt-6 grid grid-cols-3 gap-3">
+          {(["x-red", "x-black", "majestic"] as const).map((modelId) => {
             const model = modelData[modelId]
             const isActive = modelId === selectedModel
             return (
@@ -80,17 +81,16 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
                 aria-label={`Select ${model.name} model`}
                 aria-pressed={isActive}
                 style={isActive ? { border: '2px solid #e5e4e2' } : undefined}
-                className={`group flex items-center justify-between rounded-2xl px-4 py-3 text-left transition-all duration-150 ease-out ${
+                className={`group flex flex-col items-center justify-center rounded-2xl px-2 py-3 text-center transition-all duration-150 ease-out ${
                   isActive
                     ? "bg-white/10"
                     : "border-2 border-white/20 bg-white/5 hover:border-white/30 hover:bg-white/10"
                 }`}
               >
+                <div className={`h-3 w-3 rounded-full mb-2 ${model.dot}`} aria-hidden="true" />
                 <div>
-                  <p className="text-sm font-semibold text-white">{model.name}</p>
-                  <p className="text-xs text-white/50">{modelId === "x-red" ? "Crimson Heritage" : "Obsidian Noir"}</p>
+                  <p className="text-[10px] sm:text-xs font-semibold text-white truncate">{model.name}</p>
                 </div>
-                <div className={`h-3 w-3 rounded-full ${model.dot}`} aria-hidden="true" />
               </button>
             )
           })}

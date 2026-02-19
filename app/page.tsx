@@ -10,6 +10,7 @@ import { TracingBeamSection } from "@/components/tracing-beam-section"
 import { EnhancedGlobalAvailability } from "@/components/enhanced-global-availability"
 import { CTASection } from "@/components/cta-section"
 import { FassianoHeroParallax } from "@/components/fassiano-hero-parallax"
+import { ProductCollectionSection } from "@/components/product-collection-section"
 
 export default function Home() {
   return (
@@ -18,6 +19,9 @@ export default function Home() {
       <Suspense fallback={<HeroFallback />}>
         <HeroSectionServer />
       </Suspense>
+
+      {/* 2. COLLECTION - Apple-level Product Showreel */}
+      <ProductCollectionSection />
       
       {/* HIDDEN SECTIONS - Comment out to show only Hero */}
       {/* 

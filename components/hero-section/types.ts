@@ -1,3 +1,5 @@
+export type ModelId = "x-red" | "x-black" | "majestic"
+
 export interface HeroSectionProps {
   isBoxOpen?: boolean
   onBoxToggle?: (isOpen: boolean) => void

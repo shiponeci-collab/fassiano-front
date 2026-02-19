@@ -1,8 +1,7 @@
 import { Suspense } from "react"
 import { ImageGallery } from "./image-gallery"
 import { HeroContentStatic } from "./hero-content-static"
-
-type ModelId = "x-red" | "x-black"
+import { ModelId } from "./types"
 
 const MODEL_DATA: Record<ModelId, { name: string; description: string; accent: string; dot: string; price: string; originalPrice: string; images: string[] }> = {
   "x-black": {
@@ -41,6 +40,25 @@ const MODEL_DATA: Record<ModelId, { name: string; description: string; accent: s
       "Artboard 26.jpg",
       "Artboard 27.jpg",
       "Artboard 28.jpg"
+    ]
+  },
+  "majestic": {
+    name: "MAJESTIC",
+    description: "The ultimate expression of luxury and artisanal mastery.",
+    accent: "from-amber-200 via-yellow-400 to-orange-500",
+    dot: "bg-yellow-500 shadow-[0_0_12px_rgba(234,179,8,0.5)]",
+    price: "1290 MAD",
+    originalPrice: "1590",
+    images: [
+      "Artboard 1.jpg",
+      "Artboard 2.jpg",
+      "Artboard 3.jpg",
+      "Artboard 4.jpg",
+      "Artboard 5.jpg",
+      "Artboard 6.jpg",
+      "Artboard 7.jpg",
+      "Artboard 8.jpg",
+      "Artboard 9.jpg"
     ]
   }
 }
@@ -104,23 +122,10 @@ export function HeroSectionServer() {
             <div className="flex items-center justify-center order-1 lg:order-2 py-8 lg:py-0 mt-2 sm:mt-8 md:mt-4 lg:mt-4 2xl:mt-16">
               <div className="w-full max-w-xl drop-shadow-[0_35px_50px_rgba(0,0,0,0.7)]">
                 <Suspense fallback={<GalleryFallback />}>
-                  <ImageGallery modelData={MODEL_DATA} />
+                  <ImageGallery modelData={MODEL_DATA as any} />
                 </Suspense>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Static Footer Text */}
-        <div className="mt-6 flex justify-center lg:absolute lg:bottom-4 lg:left-4 lg:justify-start">
-          <div className="flex items-center space-x-2">
-            <span
-              className="text-[#e5e4e2] text-[10px] sm:text-xs font-normal tracking-[0.3em] uppercase"
-              style={{ fontFamily: "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"SF Pro Text\", system-ui, sans-serif" }}
-              role="contentinfo"
-            >
-              Made in Morocco
-            </span>
           </div>
         </div>
       </div>

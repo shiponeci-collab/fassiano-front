@@ -4,15 +4,14 @@ import { motion } from "framer-motion"
 import Image from "next/image"
 import { PRODUCT_INFO } from "./constants"
 import { PreorderButton } from "./preorder-button"
-
-type ModelId = "x-red" | "x-black"
+import { ModelId } from "./types"
 
 interface HeroContentProps {
   selectedModel: ModelId
 }
 
 export function HeroContent({ selectedModel }: HeroContentProps) {
-  const modelLabel = selectedModel === "x-red" ? "X-RED" : "X-BLACK"
+  const modelLabel = selectedModel === "x-red" ? "X-RED" : selectedModel === "majestic" ? "MAJESTIC" : "X-BLACK"
   const heroFont = "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"SF Pro Text\", system-ui, sans-serif"
   
   return (

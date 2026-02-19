@@ -7,6 +7,7 @@ interface PreorderPayload {
   address: string
   quantity_black: number
   quantity_red: number
+  quantity_majestic: number
   total_quantity: number
 }
 

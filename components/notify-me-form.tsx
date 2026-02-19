@@ -4,11 +4,12 @@ import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, Mail, User, Phone, Loader2, MapPin, Hash } from "lucide-react"
 import { submitPreorder } from "@/app/actions/submit-preorder"
+import { ModelId } from "./hero-section/types"
 
 interface NotifyMeFormProps {
   isOpen: boolean
   onClose: () => void
-  selectedModel?: "x-red" | "x-black"
+  selectedModel?: ModelId
 }
 
 export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormProps) {
@@ -18,7 +19,8 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
     phone: "",
     address: "",
     quantityBlack: "0",
-    quantityRed: "0"
+    quantityRed: "0",
+    quantityMajestic: "0"
   })
   const [submittedName, setSubmittedName] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -29,8 +31,9 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
     if (!isOpen || !selectedModel) return
     setFormData(prev => ({
       ...prev,
-      quantityBlack: selectedModel === "x-black" && prev.quantityBlack === "0" && prev.quantityRed === "0" ? "1" : prev.quantityBlack,
-      quantityRed: selectedModel === "x-red" && prev.quantityBlack === "0" && prev.quantityRed === "0" ? "1" : prev.quantityRed
+      quantityBlack: selectedModel === "x-black" && prev.quantityBlack === "0" && prev.quantityRed === "0" && prev.quantityMajestic === "0" ? "1" : prev.quantityBlack,
+      quantityRed: selectedModel === "x-red" && prev.quantityBlack === "0" && prev.quantityRed === "0" && prev.quantityMajestic === "0" ? "1" : prev.quantityRed,
+      quantityMajestic: selectedModel === "majestic" && prev.quantityBlack === "0" && prev.quantityRed === "0" && prev.quantityMajestic === "0" ? "1" : prev.quantityMajestic
     }))
   }, [isOpen, selectedModel])
 
@@ -57,6 +60,7 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
 
     const quantityBlack = Number.parseInt(formData.quantityBlack, 10)
     const quantityRed = Number.parseInt(formData.quantityRed, 10)
+    const quantityMajestic = Number.parseInt(formData.quantityMajestic, 10)
 
     if (Number.isNaN(quantityBlack) || quantityBlack < 0) {
       newErrors.quantityBlack = "Enter a valid quantity"
@@ -66,9 +70,14 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
       newErrors.quantityRed = "Enter a valid quantity"
     }
 
-    if ((quantityBlack || 0) < 1 && (quantityRed || 0) < 1) {
+    if (Number.isNaN(quantityMajestic) || quantityMajestic < 0) {
+      newErrors.quantityMajestic = "Enter a valid quantity"
+    }
+
+    if ((quantityBlack || 0) < 1 && (quantityRed || 0) < 1 && (quantityMajestic || 0) < 1) {
       newErrors.quantityBlack = "Select at least 1 pair"
       newErrors.quantityRed = "Select at least 1 pair"
+      newErrors.quantityMajestic = "Select at least 1 pair"
     }
 
     setErrors(newErrors)
@@ -91,7 +100,8 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
         address: formData.address,
         quantity_black: Number.parseInt(formData.quantityBlack, 10),
         quantity_red: Number.parseInt(formData.quantityRed, 10),
-        total_quantity: Number.parseInt(formData.quantityBlack, 10) + Number.parseInt(formData.quantityRed, 10),
+        quantity_majestic: Number.parseInt(formData.quantityMajestic, 10),
+        total_quantity: Number.parseInt(formData.quantityBlack, 10) + Number.parseInt(formData.quantityRed, 10) + Number.parseInt(formData.quantityMajestic, 10),
       })
 
       // With no-cors, we can't read the response, so we assume success
@@ -103,7 +113,8 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
         phone: "",
         address: "",
         quantityBlack: selectedModel === "x-black" ? "1" : "0",
-        quantityRed: selectedModel === "x-red" ? "1" : "0"
+        quantityRed: selectedModel === "x-red" ? "1" : "0",
+        quantityMajestic: selectedModel === "majestic" ? "1" : "0"
       })
       
       // Keep success state visible until the user closes the modal
@@ -162,7 +173,7 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
             <div className="mb-6">
               <h2 className="text-2xl font-semibold text-white mb-2">Pre-order Request</h2>
               <p className="text-white/60 text-sm">
-                Reserve multiple pairs and mix X-BLACK with X-RED
+                Reserve multiple pairs and mix X-BLACK, X-RED with MAJESTIC
               </p>
             </div>
 
@@ -257,13 +268,13 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
               </div>
 
               {/* Quantity Fields */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label htmlFor="quantityBlack" className="block text-sm text-white/70 mb-2">
-                    X-BLACK Qty
+                  <label htmlFor="quantityBlack" className="block text-[10px] sm:text-xs text-white/70 mb-2 truncate">
+                    X-BLACK
                   </label>
                   <div className="relative">
-                    <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                    <Hash className="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
                     <input
                       type="number"
                       id="quantityBlack"
@@ -272,21 +283,17 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
                       max={10}
                       value={formData.quantityBlack}
                       onChange={handleChange}
-                      className="w-full bg-white/5 border border-white/10 rounded-lg pl-11 pr-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-white/30 transition-colors"
-                      placeholder="0"
+                      className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-2 py-2 text-white text-sm placeholder-white/40 focus:outline-none focus:border-white/30 transition-colors"
                     />
                   </div>
-                  {errors.quantityBlack && (
-                    <p className="text-red-400 text-xs mt-1">{errors.quantityBlack}</p>
-                  )}
                 </div>
 
                 <div>
-                  <label htmlFor="quantityRed" className="block text-sm text-white/70 mb-2">
-                    X-RED Qty
+                  <label htmlFor="quantityRed" className="block text-[10px] sm:text-xs text-white/70 mb-2 truncate">
+                    X-RED
                   </label>
                   <div className="relative">
-                    <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+                    <Hash className="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
                     <input
                       type="number"
                       id="quantityRed"
@@ -295,14 +302,32 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
                       max={10}
                       value={formData.quantityRed}
                       onChange={handleChange}
-                      className="w-full bg-white/5 border border-white/10 rounded-lg pl-11 pr-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-white/30 transition-colors"
-                      placeholder="0"
+                      className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-2 py-2 text-white text-sm placeholder-white/40 focus:outline-none focus:border-white/30 transition-colors"
                     />
                   </div>
-                  {errors.quantityRed && (
-                    <p className="text-red-400 text-xs mt-1">{errors.quantityRed}</p>
-                  )}
                 </div>
+
+                <div>
+                  <label htmlFor="quantityMajestic" className="block text-[10px] sm:text-xs text-white/70 mb-2 truncate">
+                    MAJESTIC
+                  </label>
+                  <div className="relative">
+                    <Hash className="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                    <input
+                      type="number"
+                      id="quantityMajestic"
+                      name="quantityMajestic"
+                      min={0}
+                      max={10}
+                      value={formData.quantityMajestic}
+                      onChange={handleChange}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg pl-8 pr-2 py-2 text-white text-sm placeholder-white/40 focus:outline-none focus:border-white/30 transition-colors"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col gap-1">
+                {errors.quantityBlack && <p className="text-red-400 text-[10px]">{errors.quantityBlack}</p>}
               </div>
 
               {/* Submit Button */}
