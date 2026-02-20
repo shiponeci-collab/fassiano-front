@@ -1,7 +1,11 @@
+"use client"
+
 import { Suspense } from "react"
 import Image from "next/image"
 import { ImageGallery } from "./image-gallery"
 import { HeroContentStatic } from "./hero-content-static"
+import { HeroBackground } from "./hero-background"
+import { HeroProvider } from "./hero-context"
 import { ModelId } from "./types"
 
 const MODEL_DATA: Record<ModelId, { name: string; description: string; accent: string; dot: string; price: string; originalPrice: string; images: string[] }> = {
@@ -66,51 +70,22 @@ const MODEL_DATA: Record<ModelId, { name: string; description: string; accent: s
 
 export function HeroSectionServer() {
   return (
-    <section className="relative min-h-screen bg-[#080808] text-white overflow-hidden" aria-label="Hero section - Premium Heritage Sneakers">
-      {/* Static Background - No JS */}
-      <div className="absolute inset-0" role="presentation" aria-hidden="true">
-        <div className="absolute -top-40 left-1/2 h-[40rem] w-[40rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,_rgba(255,255,255,0.12),_transparent_60%)] blur-3xl" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,_rgba(239,68,68,0.18),_transparent_45%)]" />
-        <div
-          className="absolute inset-0 opacity-[0.12] mix-blend-screen"
-          style={{
-            backgroundImage:
-              "linear-gradient(135deg, rgba(255,255,255,0.18) 12.5%, transparent 12.5%, transparent 50%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.18) 62.5%, transparent 62.5%, transparent), linear-gradient(45deg, rgba(255,255,255,0.18) 12.5%, transparent 12.5%, transparent 50%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.18) 62.5%, transparent 62.5%, transparent)",
-            backgroundSize: "48px 48px",
-            backgroundPosition: "0 0, 24px 24px"
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/60 to-black" />
-      </div>
+    <HeroProvider>
+      <HeroSectionInner />
+    </HeroProvider>
+  )
+}
 
-      {/* Static Spotlight Effect - CSS Only */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-40" role="presentation" aria-hidden="true">
-        {/* Top Left Spotlight */}
-        <div 
-          className="absolute top-0 left-0 w-[560px] h-[1380px] animate-spotlight-slow"
-          style={{
-            transform: 'translateY(-350px) rotate(-45deg)',
-            background: 'radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(0, 85%, 70%, .12) 0, hsla(0, 85%, 60%, .04) 50%, hsla(0, 85%, 50%, 0) 80%)'
-          }}
-        />
-        {/* Left Side Spotlight */}
-        <div 
-          className="absolute top-1/2 -left-[200px] w-[500px] h-[800px]"
-          style={{
-            transform: 'translateY(-50%)',
-            background: 'radial-gradient(circle at center, hsla(0, 85%, 65%, .08) 0, hsla(0, 85%, 60%, .03) 40%, transparent 70%)'
-          }}
-        />
-        {/* Right Side Spotlight */}
-        <div 
-          className="absolute top-1/2 -right-[200px] w-[500px] h-[800px]"
-          style={{
-            transform: 'translateY(-50%)',
-            background: 'radial-gradient(circle at center, hsla(0, 85%, 65%, .08) 0, hsla(0, 85%, 60%, .03) 40%, transparent 70%)'
-          }}
-        />
-      </div>
+function HeroSectionInner() {
+  return (
+    <section
+      className="relative min-h-screen text-white overflow-hidden"
+      aria-label="Hero section - Premium Heritage Sneakers"
+    >
+      {/* ── DYNAMIC BACKGROUND (reacts to product selection) ── */}
+      <HeroBackground />
 
+      {/* ── CONTENT LAYER ──────────────────────────────────── */}
       <div className="relative z-10 min-h-screen pt-6 pb-6">
         {/* Mobile-only Top Brand Logo - Strictly hidden on Desktop */}
         <div className="flex lg:hidden justify-center pt-4 pb-4 px-4">
@@ -127,7 +102,10 @@ export function HeroSectionServer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-4 md:gap-12 items-center">
             {/* Left Column - Static Content with CSS Animations */}
-            <article className="flex flex-col justify-center space-y-6 md:space-y-8 order-2 lg:order-1 text-center lg:text-left lg:min-h-[500px]" style={{ willChange: 'auto' }}>
+            <article
+              className="flex flex-col justify-center space-y-6 md:space-y-8 order-2 lg:order-1 text-center lg:text-left lg:min-h-[500px]"
+              style={{ willChange: "auto" }}
+            >
               <HeroContentStatic />
             </article>
 
@@ -141,7 +119,6 @@ export function HeroSectionServer() {
             </div>
           </div>
         </div>
-
       </div>
 
       {/* Made in Morocco - Fixed at bottom center, no scroll */}

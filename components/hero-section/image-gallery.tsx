@@ -4,6 +4,7 @@ import { useState, useEffect, lazy, Suspense } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import Image from "next/image"
 import { ModelId } from "./types"
+import { useHeroContext } from "./hero-context"
 
 const ImageViewer = lazy(() => import("./image-viewer"))
 const NotifyMeForm = lazy(() => import("../notify-me-form").then(mod => ({ default: mod.NotifyMeForm })))
@@ -29,8 +30,16 @@ const MODEL_STYLES = {
   }
 }
 
+// Per-model accent colors for the selector ring glow
+const MODEL_ACCENT: Record<string, { border: string; shadow: string; glow: string }> = {
+  "x-red":   { border: "#ef4444", shadow: "0 0 16px rgba(239,68,68,0.5)",    glow: "from-red-600 to-red-700 border-red-500/50 hover:shadow-[0_0_20px_rgba(239,68,68,0.5)]" },
+  "x-black": { border: "#d4d4d8", shadow: "0 0 16px rgba(228,228,231,0.35)", glow: "from-zinc-600 to-zinc-700 border-zinc-500/50 hover:shadow-[0_0_20px_rgba(228,228,231,0.35)]" },
+  "majestic": { border: "#f59e0b", shadow: "0 0 18px rgba(245,158,11,0.55)",  glow: "from-amber-500 to-orange-600 border-amber-400/50 hover:shadow-[0_0_20px_rgba(245,158,11,0.55)]" },
+}
+
 export function ImageGallery({ modelData }: ImageGalleryProps) {
-  const [selectedModel, setSelectedModel] = useState<ModelId>("x-red")
+  // Use shared context so model changes update the section-wide background
+  const { selectedModel, setSelectedModel } = useHeroContext()
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [isViewerOpen, setIsViewerOpen] = useState(false)
   const [showPreorder, setShowPreorder] = useState(false)
@@ -84,6 +93,7 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
           {(["x-red", "x-black", "majestic"] as const).map((modelId) => {
             const model = modelData[modelId]
             const isActive = modelId === selectedModel
+            const accent = MODEL_ACCENT[modelId]
             return (
               <button
                 key={modelId}
@@ -91,16 +101,16 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
                 onClick={() => setSelectedModel(modelId)}
                 aria-label={`Select ${model.name} model`}
                 aria-pressed={isActive}
-                style={isActive ? { border: '2px solid #e5e4e2' } : undefined}
-                className={`group flex flex-col items-center justify-center rounded-2xl px-2 py-3 text-center transition-all duration-150 ease-out ${
+                style={isActive ? { border: `2px solid ${accent.border}`, boxShadow: accent.shadow } : undefined}
+                className={`group flex flex-col items-center justify-center rounded-2xl px-2 py-3 text-center transition-all duration-300 ease-out ${
                   isActive
                     ? "bg-white/10"
-                    : "border-2 border-white/20 bg-white/5 hover:border-white/30 hover:bg-white/10"
+                    : "border-2 border-white/15 bg-white/5 hover:border-white/30 hover:bg-white/8"
                 }`}
               >
-                <div className={`h-3 w-3 rounded-full mb-2 ${model.dot}`} aria-hidden="true" />
+                <div className={`h-3 w-3 rounded-full mb-2 ${model.dot} transition-transform duration-300 ${isActive ? "scale-125" : "group-hover:scale-110"}`} aria-hidden="true" />
                 <div>
-                  <p className="text-[10px] sm:text-xs font-semibold text-white truncate">{model.name}</p>
+                  <p className={`text-[10px] sm:text-xs font-semibold truncate transition-colors duration-300 ${isActive ? "text-white" : "text-white/60 group-hover:text-white/90"}`}>{model.name}</p>
                 </div>
               </button>
             )
@@ -187,7 +197,7 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
             type="button"
             onClick={() => setShowPreorder(true)}
             aria-label={`Pre-order ${activeModel.name} sneakers`}
-            className="rounded-full bg-gradient-to-r from-red-600 to-red-700 border border-red-500/50 px-5 py-2 text-xs font-semibold tracking-[0.2em] text-white uppercase transition-all duration-200 hover:from-red-500 hover:to-red-600 hover:border-red-400 hover:shadow-[0_0_20px_rgba(239,68,68,0.4)]"
+            className={`rounded-full bg-gradient-to-r ${MODEL_ACCENT[selectedModel].glow} border px-5 py-2 text-xs font-semibold tracking-[0.2em] text-white uppercase transition-all duration-300`}
           >
             Pre-order
           </button>
