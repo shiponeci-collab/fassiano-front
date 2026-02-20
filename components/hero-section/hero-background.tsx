@@ -3,181 +3,210 @@
 import { motion, AnimatePresence } from "framer-motion"
 import { useHeroContext } from "./hero-context"
 import { ModelId } from "./types"
+import { Spotlight } from "@/components/ui/spotlight-new"
 
-// Each model "universe" — cinematic atmosphere definition
-const MODEL_UNIVERSE: Record<ModelId, {
-  // Primary orb: big glow behind the card
-  primaryOrb: string
-  primaryOrbPosition: string
-  // Secondary orb: ambient fill on left side
-  secondaryOrb: string
-  secondaryOrbPosition: string
-  // Accent floor reflection
-  floorGlow: string
-  // Top spotlight beam
-  topBeam: string
-  // Fine particle color class
-  particleColor: string
-  // Grid tint overlay
-  gridTint: string
-  // Noise texture tint
-  noiseTint: string
+// ─────────────────────────────────────────────────────────────────────────────
+// Aceternity Spotlight — very subtle HSL gradients per model
+// Kept extremely soft so beams feel like ambient light, not stage lights
+// ─────────────────────────────────────────────────────────────────────────────
+const SPOTLIGHT_COLORS: Record<ModelId, {
+  gradientFirst: string
+  gradientSecond: string
+  gradientThird: string
 }> = {
   "x-red": {
-    primaryOrb: "radial-gradient(ellipse 700px 600px at center, rgba(220,38,38,0.22) 0%, rgba(185,28,28,0.10) 45%, transparent 75%)",
-    primaryOrbPosition: "top-[-10%] right-[-5%]",
-    secondaryOrb: "radial-gradient(ellipse 500px 500px at center, rgba(239,68,68,0.12) 0%, rgba(220,38,28,0.05) 50%, transparent 80%)",
-    secondaryOrbPosition: "top-[20%] left-[-10%]",
-    floorGlow: "radial-gradient(ellipse 800px 120px at center bottom, rgba(239,68,68,0.15) 0%, rgba(185,28,28,0.05) 50%, transparent 80%)",
-    topBeam: "linear-gradient(180deg, rgba(239,68,68,0.12) 0%, transparent 60%)",
-    particleColor: "#ef4444",
-    gridTint: "rgba(239,68,68,0.03)",
-    noiseTint: "rgba(185,28,28,0.08)",
+    gradientFirst:  "radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(0, 80%, 65%, .07) 0, hsla(0, 70%, 50%, .02) 50%, transparent 80%)",
+    gradientSecond: "radial-gradient(50% 50% at 50% 50%, hsla(0, 80%, 60%, .05) 0, hsla(0, 70%, 45%, .01) 80%, transparent 100%)",
+    gradientThird:  "radial-gradient(50% 50% at 50% 50%, hsla(0, 70%, 55%, .03) 0, transparent 80%, transparent 100%)",
   },
   "x-black": {
-    primaryOrb: "radial-gradient(ellipse 700px 600px at center, rgba(161,161,170,0.14) 0%, rgba(113,113,122,0.06) 45%, transparent 75%)",
-    primaryOrbPosition: "top-[-10%] right-[-5%]",
-    secondaryOrb: "radial-gradient(ellipse 500px 500px at center, rgba(228,228,231,0.08) 0%, rgba(161,161,170,0.03) 50%, transparent 80%)",
-    secondaryOrbPosition: "top-[20%] left-[-10%]",
-    floorGlow: "radial-gradient(ellipse 800px 120px at center bottom, rgba(228,228,231,0.10) 0%, rgba(113,113,122,0.04) 50%, transparent 80%)",
-    topBeam: "linear-gradient(180deg, rgba(228,228,231,0.07) 0%, transparent 60%)",
-    particleColor: "#d4d4d8",
-    gridTint: "rgba(228,228,231,0.025)",
-    noiseTint: "rgba(113,113,122,0.06)",
+    gradientFirst:  "radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(220, 10%, 85%, .06) 0, hsla(220, 5%, 65%, .02) 50%, transparent 80%)",
+    gradientSecond: "radial-gradient(50% 50% at 50% 50%, hsla(220, 10%, 80%, .04) 0, hsla(220, 5%, 60%, .01) 80%, transparent 100%)",
+    gradientThird:  "radial-gradient(50% 50% at 50% 50%, hsla(220, 5%, 75%, .02) 0, transparent 80%, transparent 100%)",
   },
   "majestic": {
-    primaryOrb: "radial-gradient(ellipse 700px 600px at center, rgba(217,119,6,0.22) 0%, rgba(180,83,9,0.10) 45%, transparent 75%)",
-    primaryOrbPosition: "top-[-10%] right-[-5%]",
-    secondaryOrb: "radial-gradient(ellipse 500px 500px at center, rgba(245,158,11,0.14) 0%, rgba(217,119,6,0.05) 50%, transparent 80%)",
-    secondaryOrbPosition: "top-[20%] left-[-10%]",
-    floorGlow: "radial-gradient(ellipse 800px 120px at center bottom, rgba(251,191,36,0.18) 0%, rgba(217,119,6,0.07) 50%, transparent 80%)",
-    topBeam: "linear-gradient(180deg, rgba(245,158,11,0.12) 0%, transparent 60%)",
-    particleColor: "#f59e0b",
-    gridTint: "rgba(245,158,11,0.04)",
-    noiseTint: "rgba(180,83,9,0.09)",
+    gradientFirst:  "radial-gradient(68.54% 68.72% at 55.02% 31.46%, hsla(38, 90%, 65%, .09) 0, hsla(38, 80%, 45%, .03) 50%, transparent 80%)",
+    gradientSecond: "radial-gradient(50% 50% at 50% 50%, hsla(38, 90%, 60%, .06) 0, hsla(38, 75%, 40%, .02) 80%, transparent 100%)",
+    gradientThird:  "radial-gradient(50% 50% at 50% 50%, hsla(38, 80%, 55%, .04) 0, transparent 80%, transparent 100%)",
   },
 }
 
-// Static particle positions (avoids hydration issues)
+// ─────────────────────────────────────────────────────────────────────────────
+// Per-model ambient universe
+// Strategy: ONE huge ultra-soft center orb that bleeds evenly in all
+// directions. No secondaryOrb — that was creating the hard-edge blob.
+// All intensities reduced ~50% from before so the effect is whisper-soft.
+// ─────────────────────────────────────────────────────────────────────────────
+const MODEL_UNIVERSE: Record<ModelId, {
+  // Single large center-right orb — soft, very large, no hard edge
+  centerOrb: string
+  // Ultra-wide full-screen tint — carries colour ALL the way left
+  fullTint: string
+  // Subtle top bleed
+  topBleed: string
+  // Subtle floor
+  floorGlow: string
+  // Particle dot colour
+  particleColor: string
+}> = {
+  "x-red": {
+    centerOrb: "radial-gradient(ellipse 140% 120% at 75% 40%, rgba(200,30,30,0.16) 0%, rgba(160,20,20,0.06) 50%, transparent 75%)",
+    fullTint:  "radial-gradient(ellipse 200% 160% at 50% 50%, rgba(220,38,38,0.07) 0%, transparent 70%)",
+    topBleed:  "linear-gradient(180deg, rgba(200,30,30,0.10) 0%, transparent 50%)",
+    floorGlow: "radial-gradient(ellipse 120% 80px at 50% 100%, rgba(200,30,30,0.10) 0%, transparent 80%)",
+    particleColor: "#ef4444",
+  },
+  "x-black": {
+    centerOrb: "radial-gradient(ellipse 140% 120% at 75% 40%, rgba(150,150,165,0.12) 0%, rgba(100,100,115,0.05) 50%, transparent 75%)",
+    fullTint:  "radial-gradient(ellipse 200% 160% at 50% 50%, rgba(200,200,215,0.05) 0%, transparent 70%)",
+    topBleed:  "linear-gradient(180deg, rgba(160,160,175,0.07) 0%, transparent 50%)",
+    floorGlow: "radial-gradient(ellipse 120% 80px at 50% 100%, rgba(160,160,175,0.08) 0%, transparent 80%)",
+    particleColor: "#d4d4d8",
+  },
+  "majestic": {
+    centerOrb: "radial-gradient(ellipse 140% 120% at 75% 40%, rgba(200,110,0,0.18) 0%, rgba(160,80,0,0.07) 50%, transparent 75%)",
+    fullTint:  "radial-gradient(ellipse 200% 160% at 50% 50%, rgba(230,140,0,0.08) 0%, transparent 70%)",
+    topBleed:  "linear-gradient(180deg, rgba(200,120,0,0.11) 0%, transparent 50%)",
+    floorGlow: "radial-gradient(ellipse 120% 80px at 50% 100%, rgba(220,150,0,0.12) 0%, transparent 80%)",
+    particleColor: "#f59e0b",
+  },
+}
+
+// Static particle positions — right side only (away from card on mobile)
 const PARTICLES = [
-  { x: 72, y: 28, size: 1.5, dur: 5.2, del: 0 },
-  { x: 80, y: 45, size: 1,   dur: 6.8, del: 0.7 },
-  { x: 65, y: 60, size: 2,   dur: 4.5, del: 1.2 },
-  { x: 85, y: 32, size: 1.2, dur: 7.0, del: 0.3 },
-  { x: 58, y: 25, size: 1,   dur: 5.8, del: 1.8 },
-  { x: 90, y: 55, size: 1.5, dur: 6.2, del: 0.9 },
-  { x: 78, y: 70, size: 1,   dur: 4.8, del: 2.1 },
-  { x: 62, y: 40, size: 1.8, dur: 5.5, del: 0.5 },
-  // Left side
-  { x: 8,  y: 35, size: 1,   dur: 6.0, del: 1.5 },
-  { x: 15, y: 55, size: 1.2, dur: 5.0, del: 0.8 },
-  { x: 5,  y: 70, size: 1.5, dur: 7.2, del: 2.3 },
-  // Center
-  { x: 42, y: 18, size: 1,   dur: 5.3, del: 1.1 },
-  { x: 50, y: 80, size: 1.3, dur: 6.5, del: 0.4 },
+  { x: 74, y: 22, size: 1.2, dur: 5.2, del: 0.0 },
+  { x: 82, y: 42, size: 0.9, dur: 6.8, del: 0.7 },
+  { x: 68, y: 58, size: 1.5, dur: 4.5, del: 1.2 },
+  { x: 88, y: 30, size: 1.0, dur: 7.0, del: 0.3 },
+  { x: 78, y: 68, size: 0.8, dur: 4.8, del: 2.1 },
+  { x: 64, y: 38, size: 1.3, dur: 5.5, del: 0.5 },
+  { x: 92, y: 52, size: 1.0, dur: 6.2, del: 0.9 },
+  // Far left — very sparse
+  { x: 6,  y: 40, size: 0.8, dur: 6.5, del: 1.8 },
+  { x: 12, y: 62, size: 1.0, dur: 5.8, del: 2.4 },
 ]
 
 const transition = {
-  duration: 1.1,
+  duration: 1.4,
   ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
 }
 
 export function HeroBackground() {
   const { selectedModel } = useHeroContext()
   const u = MODEL_UNIVERSE[selectedModel]
+  const sc = SPOTLIGHT_COLORS[selectedModel]
 
   return (
-    <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-      
-      {/* ── BASE DARK CANVAS ─────────────────────────────── */}
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+
+      {/* ── BASE ───────────────────────────────────────────── */}
       <div className="absolute inset-0 bg-[#070707]" />
 
-      {/* ── ANIMATED PRIMARY ORB ─────────────────────────── */}
+      {/* ── FULL-SCREEN TINT — ultra-soft, covers 100% width ─
+           This is the "left column" colour — stays very subtle  */}
       <AnimatePresence mode="sync">
         <motion.div
-          key={`primary-${selectedModel}`}
-          className={`absolute ${u.primaryOrbPosition} w-[900px] h-[900px]`}
-          style={{ background: u.primaryOrb }}
-          initial={{ opacity: 0, scale: 0.75 }}
+          key={`tint-${selectedModel}`}
+          className="absolute inset-0"
+          style={{ background: u.fullTint }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ ...transition, duration: 1.8 }}
+        />
+      </AnimatePresence>
+
+      {/* ── CENTER-RIGHT ORB — the main glow source ──────────
+           Positioned at 75% X so it's behind the card on desktop
+           but the ellipse is so large it bleeds left naturally    */}
+      <AnimatePresence mode="sync">
+        <motion.div
+          key={`orb-${selectedModel}`}
+          className="absolute inset-0"
+          style={{ background: u.centerOrb }}
+          initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.85 }}
+          exit={{ opacity: 0, scale: 0.9 }}
           transition={transition}
         />
       </AnimatePresence>
 
-      {/* ── ANIMATED SECONDARY ORB ───────────────────────── */}
+      {/* ── TOP BLEED ─────────────────────────────────────── */}
       <AnimatePresence mode="sync">
         <motion.div
-          key={`secondary-${selectedModel}`}
-          className={`absolute ${u.secondaryOrbPosition} w-[700px] h-[700px]`}
-          style={{ background: u.secondaryOrb }}
-          initial={{ opacity: 0, scale: 0.7 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          transition={{ ...transition, duration: 1.4 }}
-        />
-      </AnimatePresence>
-
-      {/* ── TOP BEAM (tinted light from ceiling) ─────────── */}
-      <AnimatePresence mode="sync">
-        <motion.div
-          key={`beam-${selectedModel}`}
-          className="absolute inset-x-0 top-0 h-[55%]"
-          style={{ background: u.topBeam }}
+          key={`top-${selectedModel}`}
+          className="absolute inset-x-0 top-0 h-[60%]"
+          style={{ background: u.topBleed }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.9 }}
+          transition={{ ...transition, duration: 1.2 }}
         />
       </AnimatePresence>
 
-      {/* ── FLOOR GLOW REFLECTION ────────────────────────── */}
+      {/* ── FLOOR GLOW ────────────────────────────────────── */}
       <AnimatePresence mode="sync">
         <motion.div
           key={`floor-${selectedModel}`}
-          className="absolute inset-x-0 bottom-0 h-40"
+          className="absolute inset-x-0 bottom-0 h-32"
           style={{ background: u.floorGlow }}
-          initial={{ opacity: 0, scaleX: 0.4 }}
-          animate={{ opacity: 1, scaleX: 1 }}
-          exit={{ opacity: 0, scaleX: 0.5 }}
-          transition={{ ...transition, duration: 1.3 }}
-        />
-      </AnimatePresence>
-
-      {/* ── GRID PATTERN with tinted overlay ─────────────── */}
-      <div
-        className="absolute inset-0 opacity-[0.09] mix-blend-screen"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.18) 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
-        }}
-      />
-      <AnimatePresence mode="sync">
-        <motion.div
-          key={`grid-tint-${selectedModel}`}
-          className="absolute inset-0"
-          style={{ background: u.gridTint }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ ...transition, duration: 1.5 }}
         />
       </AnimatePresence>
 
-      {/* ── VIGNETTE ─────────────────────────────────────── */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/40" />
+      {/* ── ACETERNITY SPOTLIGHT (subtle beam from corners) ──
+           Heavily reduced opacity wrapper + simplified params
+           so beams are barely there — just a whisper of light   */}
+      <AnimatePresence mode="sync">
+        <motion.div
+          key={`spotlight-${selectedModel}`}
+          className="absolute inset-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.7 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1.6, ease: "easeOut" }}
+        >
+          <Spotlight
+            gradientFirst={sc.gradientFirst}
+            gradientSecond={sc.gradientSecond}
+            gradientThird={sc.gradientThird}
+            translateY={-380}
+            width={500}
+            height={1380}
+            smallWidth={200}
+            duration={11}
+            xOffset={60}
+          />
+        </motion.div>
+      </AnimatePresence>
 
-      {/* ── FLOATING PARTICLES ───────────────────────────── */}
+      {/* ── SUBTLE GRID ───────────────────────────────────── */}
+      <div
+        className="absolute inset-0 opacity-[0.06] mix-blend-screen"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+        }}
+      />
+
+      {/* ── VIGNETTE — only vertical, no left blocking ────── */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-black/75" />
+      {/* Very minimal right edge darkening — no left-side gradient */}
+      <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-black/30 to-transparent" />
+
+      {/* ── PARTICLES — right column only on desktop ──────── */}
       <AnimatePresence mode="sync">
         <motion.div
           key={`particles-${selectedModel}`}
-          className="absolute inset-0"
+          className="absolute inset-0 hidden sm:block"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.7 }}
         >
           {PARTICLES.map((p, i) => (
             <motion.div
@@ -189,12 +218,12 @@ export function HeroBackground() {
                 width: p.size,
                 height: p.size,
                 backgroundColor: u.particleColor,
-                boxShadow: `0 0 ${p.size * 3}px ${u.particleColor}`,
+                boxShadow: `0 0 ${p.size * 4}px ${u.particleColor}80`,
               }}
               animate={{
-                opacity: [0, 0.7, 0],
-                y: [0, -18, -35],
-                scale: [0.8, 1.4, 0.5],
+                opacity: [0, 0.5, 0],
+                y: [0, -14, -28],
+                scale: [0.8, 1.3, 0.5],
               }}
               transition={{
                 duration: p.dur,
@@ -205,29 +234,6 @@ export function HeroBackground() {
             />
           ))}
         </motion.div>
-      </AnimatePresence>
-
-      {/* ── SPOTLIGHT CONE (dramatic top-right sweep) ─────── */}
-      <AnimatePresence mode="sync">
-        <motion.div
-          key={`cone-${selectedModel}`}
-          className="absolute -top-24 -right-16 w-[720px] h-[720px] pointer-events-none"
-          style={{
-            background: `conic-gradient(
-              from 225deg at 88% 12%,
-              transparent 0deg,
-              ${u.particleColor}28 28deg,
-              ${u.particleColor}12 48deg,
-              ${u.particleColor}06 72deg,
-              transparent 100deg,
-              transparent 360deg
-            )`,
-          }}
-          initial={{ opacity: 0, rotate: 20, scale: 0.6 }}
-          animate={{ opacity: 1, rotate: 0, scale: 1 }}
-          exit={{ opacity: 0, rotate: -15, scale: 0.7 }}
-          transition={{ ...transition, duration: 1.5 }}
-        />
       </AnimatePresence>
 
     </div>
