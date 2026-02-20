@@ -12,7 +12,22 @@ interface NotifyMeFormProps {
   selectedModel?: ModelId
 }
 
-export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormProps) {
+const MODEL_MODAL_STYLES = {
+  "x-red": {
+    card: "border-red-500/40 border-t-red-400/60 bg-gradient-to-b from-red-950/80 via-black/98 to-black",
+    shadow: "shadow-[0_-25px_60px_rgba(239,68,68,0.15),0_30px_70px_rgba(0,0,0,0.8)]"
+  },
+  "majestic": {
+    card: "border-amber-500/40 border-t-amber-400/60 bg-gradient-to-b from-amber-900/80 via-black/98 to-black",
+    shadow: "shadow-[0_-25px_60px_rgba(251,191,36,0.15),0_30px_70px_rgba(0,0,0,0.8)]"
+  },
+  "x-black": {
+    card: "border-zinc-700/50 border-t-zinc-500/70 bg-gradient-to-b from-zinc-900/80 via-black/98 to-black",
+    shadow: "shadow-[0_-25px_60px_rgba(255,255,255,0.05),0_30px_70px_rgba(0,0,0,0.8)]"
+  }
+}
+
+export function NotifyMeForm({ isOpen, onClose, selectedModel = "x-black" }: NotifyMeFormProps) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -26,6 +41,9 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  // Determine active style based on selectedModel
+  const activeStyle = MODEL_MODAL_STYLES[selectedModel] || MODEL_MODAL_STYLES["x-black"]
 
   useEffect(() => {
     if (!isOpen || !selectedModel) return
@@ -154,7 +172,7 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel }: NotifyMeFormPro
           onClick={handleClose}
         >
           <motion.div
-            className="relative w-full max-w-md bg-gradient-to-b from-zinc-900 to-black border border-white/10 border-t-white/20 rounded-2xl p-8 shadow-[0_-25px_60px_rgba(0,0,0,0.55),0_25px_60px_rgba(0,0,0,0.55)]"
+            className={`relative w-full max-w-md border rounded-2xl p-8 shadow-2xl transition-all duration-300 ${activeStyle.card} ${activeStyle.shadow}`}
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}

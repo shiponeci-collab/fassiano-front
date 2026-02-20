@@ -11,6 +11,7 @@ import { EnhancedGlobalAvailability } from "@/components/enhanced-global-availab
 import { CTASection } from "@/components/cta-section"
 import { FassianoHeroParallax } from "@/components/fassiano-hero-parallax"
 import { ProductCollectionSection } from "@/components/product-collection-section"
+import { Footer } from "@/components/footer"
 
 export default function Home() {
   return (
@@ -21,7 +22,10 @@ export default function Home() {
       </Suspense>
 
       {/* 2. COLLECTION - Apple-level Product Showreel */}
-      <ProductCollectionSection />
+      {/* <ProductCollectionSection /> */}
+      
+      {/* 3. FOOTER */}
+      {/* <Footer /> */}
       
       {/* HIDDEN SECTIONS - Comment out to show only Hero */}
       {/* 

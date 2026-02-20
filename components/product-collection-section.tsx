@@ -14,7 +14,7 @@ const COLLECTION = [
     image: "/majestic/Artboard 7.jpg",
     accent: "from-amber-200 via-yellow-400 to-orange-500",
     bgGradient: "from-amber-950/20 to-black",
-    price: "1290 MAD"
+    price: "590 MAD"
   },
   {
     id: "x-red",

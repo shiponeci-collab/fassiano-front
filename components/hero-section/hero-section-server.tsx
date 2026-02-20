@@ -1,4 +1,5 @@
 import { Suspense } from "react"
+import Image from "next/image"
 import { ImageGallery } from "./image-gallery"
 import { HeroContentStatic } from "./hero-content-static"
 import { ModelId } from "./types"
@@ -47,8 +48,8 @@ const MODEL_DATA: Record<ModelId, { name: string; description: string; accent: s
     description: "The ultimate expression of luxury and artisanal mastery.",
     accent: "from-amber-200 via-yellow-400 to-orange-500",
     dot: "bg-yellow-500 shadow-[0_0_12px_rgba(234,179,8,0.5)]",
-    price: "1290 MAD",
-    originalPrice: "1590",
+    price: "590 MAD",
+    originalPrice: "790",
     images: [
       "Artboard 1.jpg",
       "Artboard 2.jpg",
@@ -111,15 +112,27 @@ export function HeroSectionServer() {
       </div>
 
       <div className="relative z-10 min-h-screen pt-6 pb-6">
+        {/* Mobile-only Top Brand Logo - Strictly hidden on Desktop */}
+        <div className="flex lg:hidden justify-center pt-4 pb-4 px-4">
+          <Image
+            src="/brand-logohero.png"
+            alt="FASSIANO"
+            width={160}
+            height={54}
+            className="h-8 w-auto object-contain filter brightness-0 invert"
+            fetchPriority="high"
+          />
+        </div>
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 md:gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-4 md:gap-12 items-center">
             {/* Left Column - Static Content with CSS Animations */}
-            <article className="flex flex-col justify-center space-y-6 md:space-y-8 order-2 lg:order-1 text-center lg:text-left min-h-[400px] lg:min-h-[500px]" style={{ willChange: 'auto' }}>
+            <article className="flex flex-col justify-center space-y-6 md:space-y-8 order-2 lg:order-1 text-center lg:text-left lg:min-h-[500px]" style={{ willChange: 'auto' }}>
               <HeroContentStatic />
             </article>
 
-            {/* Right Column - Interactive Gallery */}
-            <div className="flex items-center justify-center order-1 lg:order-2 py-8 lg:py-0 mt-2 sm:mt-8 md:mt-4 lg:mt-4 2xl:mt-16">
+            {/* Right Column - Interactive Gallery (First on Mobile) */}
+            <div className="flex items-center justify-center order-1 lg:order-2 py-2 lg:py-0 mt-2 lg:mt-4">
               <div className="w-full max-w-xl drop-shadow-[0_35px_50px_rgba(0,0,0,0.7)]">
                 <Suspense fallback={<GalleryFallback />}>
                   <ImageGallery modelData={MODEL_DATA as any} />
@@ -128,6 +141,17 @@ export function HeroSectionServer() {
             </div>
           </div>
         </div>
+
+      </div>
+
+      {/* Made in Morocco - Fixed at bottom center, no scroll */}
+      <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-20">
+        <span
+          className="text-[#e5e4e2]/30 text-[9px] sm:text-[10px] font-normal tracking-[0.4em] uppercase whitespace-nowrap"
+          style={{ fontFamily: "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"SF Pro Text\", system-ui, sans-serif" }}
+        >
+          Made in Morocco
+        </span>
       </div>
     </section>
   )

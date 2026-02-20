@@ -14,6 +14,21 @@ interface ImageGalleryProps {
 
 const buildImageSrc = (model: ModelId, fileName: string) => `/${model}/${encodeURIComponent(fileName)}`
 
+const MODEL_STYLES = {
+  "x-red": {
+    card: "border-red-500/40 border-t-red-400/60 bg-gradient-to-b from-red-950/50 via-black/95 to-black",
+    shadow: "shadow-[0_-25px_60px_rgba(239,68,68,0.12),0_25px_60px_rgba(0,0,0,0.65),0_0_0_1px_rgba(255,255,255,0.05)]"
+  },
+  "majestic": {
+    card: "border-amber-500/40 border-t-amber-400/60 bg-gradient-to-b from-amber-900/50 via-black/95 to-black",
+    shadow: "shadow-[0_-25px_60px_rgba(255,255,255,0.05),0_25px_60px_rgba(0,0,0,0.65),0_0_0_1px_rgba(255,255,255,0.05)]"
+  },
+  "x-black": {
+    card: "border-zinc-600/50 border-t-zinc-400/70 bg-gradient-to-b from-zinc-900/70 via-black/95 to-black",
+    shadow: "shadow-[0_-25px_60px_rgba(255,255,255,0.05),0_25px_60px_rgba(0,0,0,0.65),0_0_0_1px_rgba(255,255,255,0.05)]"
+  }
+}
+
 export function ImageGallery({ modelData }: ImageGalleryProps) {
   const [selectedModel, setSelectedModel] = useState<ModelId>("x-red")
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
@@ -36,16 +51,12 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
     setSelectedImageIndex(prev => (prev + 1) % activeImages.length)
   }
 
-  // Dynamic card colors based on selected model
-  const cardColors = selectedModel === "x-red" 
-    ? "border-red-500/40 border-t-red-400/60 bg-gradient-to-b from-red-950/50 to-black/80" 
-    : selectedModel === "majestic"
-    ? "border-amber-500/40 border-t-amber-400/60 bg-gradient-to-b from-amber-950/40 to-black/90"
-    : "border-zinc-600/50 border-t-zinc-400/70 bg-gradient-to-b from-zinc-900/70 to-black/90"
+  const activeStyle = MODEL_STYLES[selectedModel]
+  const containerClassName = `rounded-[2rem] ${activeStyle.card} ${activeStyle.shadow} backdrop-blur-3xl p-6 sm:p-8 transition-all duration-300 ease-out`
 
   return (
     <>
-      <div className={`rounded-[2rem] ${cardColors} backdrop-blur-3xl p-6 sm:p-8 shadow-[0_-25px_60px_rgba(0,0,0,0.55),0_25px_60px_rgba(0,0,0,0.65),0_0_0_1px_rgba(255,255,255,0.05)] transition-all duration-200 ease-out`}>
+      <div className={containerClassName}>
         <div className="flex items-start justify-between gap-3 sm:gap-6">
           <div>
             <p className="text-xs uppercase tracking-[0.35em] text-white/45">Limited Edition</p>
@@ -106,18 +117,12 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
             aria-label={`View ${activeModel.name} in full screen`}
           >
             <Image
-              key={activeImageSrc}
               src={activeImageSrc}
-              alt={`${activeModel.name} premium sneaker - view ${selectedImageIndex + 1} of ${activeImages.length}`}
+              alt={`${activeModel.name} premium sneaker`}
               fill
-              priority={selectedImageIndex === 0}
-              quality={selectedImageIndex === 0 ? 75 : 60}
+              priority
               sizes="(max-width: 640px) 85vw, (max-width: 1024px) 45vw, 40vw"
               className="object-cover transition-opacity duration-300"
-              loading={selectedImageIndex === 0 ? "eager" : "lazy"}
-              fetchPriority={selectedImageIndex === 0 ? "high" : "low"}
-              placeholder="blur"
-              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA3oAA//9k="
             />
           </button>
           <button
@@ -132,7 +137,7 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
             type="button"
             onClick={handleNextImage}
             aria-label="Next image"
-            className="absolute right-3 top-1/2 z-20 -translate-y-1/2 rounded-full border border-white/20 bg-black/70 p-2 text-white/80 hover:text-white hover:border-white/40 transition"
+            className="absolute cursor-pointer right-3 top-1/2 z-20 -translate-y-1/2 rounded-full border border-white/20 bg-black/70 p-2 text-white/80 hover:text-white hover:border-white/40 transition"
           >
             <ChevronRight className="h-5 w-5" aria-hidden="true" />
           </button>
@@ -166,7 +171,6 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
                   height={64}
                   sizes="48px"
                   loading="lazy"
-                  quality={60}
                   className="h-full w-full object-cover"
                   aria-hidden="true"
                 />
@@ -218,3 +222,4 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
     </>
   )
 }
+

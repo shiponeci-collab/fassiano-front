@@ -202,7 +202,7 @@ export function HeroSection() {
                       <button
                         type="button"
                         onClick={handleNextImage}
-                        className="absolute right-3 top-1/2 z-20 -translate-y-1/2 rounded-full border border-white/20 bg-black/70 p-2 text-white/80 hover:text-white hover:border-white/40 transition"
+                        className="absolute cursor-pointer right-3 top-1/2 z-20 -translate-y-1/2 rounded-full border border-white/20 bg-black/70 p-2 text-white/80 hover:text-white hover:border-white/40 transition"
                         aria-label="Next image"
                       >
                         <ChevronRight className="h-5 w-5" />
