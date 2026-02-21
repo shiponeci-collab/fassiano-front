@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { createPortal } from "react-dom"
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react"
 import Image from "next/image"
 
@@ -46,13 +47,13 @@ export default function ImageViewer({
 
   if (!isOpen) return null
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[70] bg-black/98 backdrop-blur-md flex items-center justify-center p-3 animate-fadeIn overflow-y-auto"
+      className="fixed inset-0 z-[70] bg-black/98 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 animate-fadeIn"
       onClick={onClose}
     >
       <div 
-        className="relative w-full sm:w-[94%] max-w-4xl max-h-[90vh] animate-scaleIn my-auto flex flex-col" 
+        className="relative w-full sm:w-[94%] max-w-4xl h-full animate-scaleIn flex flex-col"
         onClick={(e) => e.stopPropagation()}
         style={{ boxSizing: "border-box" }}
       >
@@ -76,7 +77,7 @@ export default function ImageViewer({
         <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/60 shadow-2xl w-full flex-grow min-h-0">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_60%)]" />
           
-          <div className="relative h-[38vh] sm:h-[60vh] w-full overflow-hidden flex items-center justify-center">
+          <div className="relative h-full min-h-[180px] w-full overflow-hidden flex items-center justify-center">
             <Image
               src={activeImageSrc}
               alt={`${modelName} full view ${selectedIndex + 1}`}
@@ -136,6 +137,7 @@ export default function ImageViewer({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
