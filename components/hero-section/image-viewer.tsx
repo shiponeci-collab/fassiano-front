@@ -48,10 +48,10 @@ export default function ImageViewer({
 
   return (
     <div
-      className="fixed inset-0 z-[70] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn"
+      className="fixed inset-0 z-[70] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn overflow-y-auto"
       onClick={onClose}
     >
-      <div className="relative w-full max-w-4xl animate-scaleIn" onClick={(e) => e.stopPropagation()}>
+      <div className="relative w-full max-w-4xl animate-scaleIn my-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-white/50">{modelName}</p>
@@ -68,7 +68,7 @@ export default function ImageViewer({
 
         <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/60">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_60%)]" />
-          <div className="relative h-[60vh] w-full overflow-hidden">
+          <div className="relative h-[50vh] sm:h-[60vh] w-full overflow-hidden">
             <Image
               src={activeImageSrc}
               alt={`${modelName} full view ${selectedIndex + 1}`}

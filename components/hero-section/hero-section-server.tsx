@@ -1,6 +1,6 @@
 "use client"
 
-import { Suspense } from "react"
+import { Suspense, useState, useEffect } from "react"
 import Image from "next/image"
 import { ImageGallery } from "./image-gallery"
 import { HeroContentStatic } from "./hero-content-static"
@@ -77,13 +77,19 @@ export function HeroSectionServer() {
 }
 
 function HeroSectionInner() {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   return (
     <section
       className="relative min-h-screen text-white overflow-hidden"
       aria-label="Hero section - Premium Heritage Sneakers"
     >
       {/* ── DYNAMIC BACKGROUND (reacts to product selection) ── */}
-      <HeroBackground />
+      {mounted && <HeroBackground />}
 
       {/* ── CONTENT LAYER ──────────────────────────────────── */}
       <div className="relative z-10 min-h-screen pt-6 pb-6">
@@ -111,7 +117,7 @@ function HeroSectionInner() {
 
             {/* Right Column - Interactive Gallery (First on Mobile) */}
             <div className="flex items-center justify-center order-1 lg:order-2 py-2 lg:py-0 mt-2 lg:mt-4">
-              <div className="w-full max-w-xl drop-shadow-[0_35px_50px_rgba(0,0,0,0.7)]">
+              <div className="w-full max-w-md lg:max-w-[440px] xl:max-w-lg 2xl:max-w-xl drop-shadow-[0_35px_50px_rgba(0,0,0,0.7)]">
                 <Suspense fallback={<GalleryFallback />}>
                   <ImageGallery modelData={MODEL_DATA as any} />
                 </Suspense>
@@ -121,15 +127,17 @@ function HeroSectionInner() {
         </div>
       </div>
 
-      {/* Made in Morocco - Fixed at bottom center, no scroll */}
-      <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-20">
-        <span
-          className="text-[#e5e4e2]/30 text-[9px] sm:text-[10px] font-normal tracking-[0.4em] uppercase whitespace-nowrap"
-          style={{ fontFamily: "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"SF Pro Text\", system-ui, sans-serif" }}
-        >
-          Made in Morocco
-        </span>
-      </div>
+      {/* Made in Morocco - Responsive Centering */}
+      {mounted && (
+        <div className="relative lg:absolute w-full lg:w-auto flex justify-center lg:block bottom-auto lg:bottom-6 left-0 lg:left-1/2 lg:-translate-x-1/2 z-20 mt-8 mb-4 lg:mt-0 pb-10 lg:pb-0">
+          <span
+            className="text-[#e5e4e2]/30 text-[9px] sm:text-[10px] font-normal tracking-[0.4em] uppercase whitespace-nowrap"
+            style={{ fontFamily: "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"SF Pro Text\", system-ui, sans-serif" }}
+          >
+            Made in Morocco
+          </span>
+        </div>
+      )}
     </section>
   )
 }

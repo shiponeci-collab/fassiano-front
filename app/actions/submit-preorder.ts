@@ -19,7 +19,7 @@ export async function submitPreorder(payload: PreorderPayload) {
   }
 
   try {
-    await fetch(scriptUrl, {
+    const response = await fetch(scriptUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -29,11 +29,20 @@ export async function submitPreorder(payload: PreorderPayload) {
         timestamp: new Date().toISOString(),
       }),
       cache: "no-store",
+      redirect: "follow",
     })
-  } catch {
-    // Google Apps Script may redirect or return non-standard responses
-    // The data is still sent successfully, so we ignore fetch errors
-  }
 
-  return { ok: true }
+    if (!response.ok) {
+      const text = await response.text()
+      throw new Error(`Failed to submit to Google Sheets: ${response.status} ${text}`)
+    }
+    
+    return { ok: true }
+  } catch (error) {
+    console.error("Submission error:", error)
+    return { 
+      ok: false, 
+      error: error instanceof Error ? error.message : "Unknown submission error" 
+    }
+  }
 }

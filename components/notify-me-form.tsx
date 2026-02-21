@@ -111,7 +111,7 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel = "x-black" }: Not
     setSubmitStatus("idle")
 
     try {
-      await submitPreorder({
+      const result = await submitPreorder({
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
@@ -122,7 +122,10 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel = "x-black" }: Not
         total_quantity: Number.parseInt(formData.quantityBlack, 10) + Number.parseInt(formData.quantityRed, 10) + Number.parseInt(formData.quantityMajestic, 10),
       })
 
-      // With no-cors, we can't read the response, so we assume success
+      if (!result.ok) {
+        throw new Error(result.error || "Failed to submit order")
+      }
+
       setSubmittedName(formData.name.trim())
       setSubmitStatus("success")
       setFormData({
@@ -135,8 +138,6 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel = "x-black" }: Not
         quantityMajestic: selectedModel === "majestic" ? "1" : "0"
       })
       
-      // Keep success state visible until the user closes the modal
-
     } catch (error) {
       console.error("Error submitting form:", error)
       setSubmitStatus("error")
@@ -164,7 +165,7 @@ export function NotifyMeForm({ isOpen, onClose, selectedModel = "x-black" }: Not
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
+          className="fixed rounded-2xl inset-0 z-[70] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

@@ -61,27 +61,27 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
   }
 
   const activeStyle = MODEL_STYLES[selectedModel]
-  const containerClassName = `rounded-[2rem] ${activeStyle.card} ${activeStyle.shadow} backdrop-blur-3xl p-6 sm:p-8 transition-all duration-300 ease-out`
+  const containerClassName = `rounded-[2rem] ${activeStyle.card} ${activeStyle.shadow} backdrop-blur-3xl p-6 xl:p-8 transition-all duration-300 ease-out`
 
   return (
     <>
       <div className={containerClassName}>
         <div className="flex items-start justify-between gap-3 sm:gap-6">
           <div>
-            <p className="text-xs uppercase tracking-[0.35em] text-white/45">Limited Edition</p>
-            <h3 className={`mt-2 text-xl sm:text-2xl lg:text-3xl font-semibold tracking-tight bg-gradient-to-b ${activeModel.accent} bg-clip-text text-transparent`}>
+            <p className="text-[10px] sm:text-xs uppercase tracking-[0.35em] text-white/45">Limited Edition</p>
+            <h3 className={`mt-1.5 text-lg sm:text-xl lg:text-2xl 2xl:text-3xl font-semibold tracking-tight bg-gradient-to-b ${activeModel.accent} bg-clip-text text-transparent`}>
               {activeModel.name}
             </h3>
           </div>
           <div className="flex flex-col items-end text-right flex-shrink-0">
             <div className="flex items-baseline gap-2">
-              <span className="text-xs sm:text-sm text-white/40 line-through">{activeModel.originalPrice}</span>
+              <span className="text-[10px] sm:text-xs text-white/40 line-through">{activeModel.originalPrice}</span>
               <div className="flex items-start gap-1">
-                <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">{activeModel.price.split(' ')[0]}</span>
+                <span className="text-lg sm:text-xl lg:text-2xl 2xl:text-3xl font-bold text-white">{activeModel.price.split(' ')[0]}</span>
                 <span className="text-[9px] sm:text-[10px] text-white/60 font-medium mt-0.5">{activeModel.price.split(' ')[1]}</span>
               </div>
             </div>
-            <span className="mt-1 text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] text-green-400 whitespace-nowrap">-20% Off</span>
+            <span className="mt-1 text-[9px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] text-green-400 whitespace-nowrap">-20% Off</span>
           </div>
         </div>
 
@@ -102,7 +102,7 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
                 aria-label={`Select ${model.name} model`}
                 aria-pressed={isActive}
                 style={isActive ? { border: `2px solid ${accent.border}`, boxShadow: accent.shadow } : undefined}
-                className={`group flex flex-col items-center justify-center rounded-2xl px-2 py-3 text-center transition-all duration-300 ease-out ${
+                className={`group cursor-pointer flex flex-col items-center justify-center rounded-2xl px-2 py-3 text-center transition-all duration-300 ease-out ${
                   isActive
                     ? "bg-white/10"
                     : "border-2 border-white/15 bg-white/5 hover:border-white/30 hover:bg-white/8"
@@ -170,7 +170,7 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
                 onClick={() => setSelectedImageIndex(index)}
                 aria-label={`View angle ${index + 1} of ${activeImages.length}`}
                 aria-current={isActive}
-                className={`relative h-8 w-12 flex-shrink-0 overflow-hidden rounded-md border transition-all duration-300 ${
+                className={`relative cursor-pointer h-8 w-12 flex-shrink-0 overflow-hidden rounded-md border transition-all duration-300 ${
                   isActive ? "border-white/60" : "border-white/10 hover:border-white/30"
                 }`}
               >
@@ -197,7 +197,7 @@ export function ImageGallery({ modelData }: ImageGalleryProps) {
             type="button"
             onClick={() => setShowPreorder(true)}
             aria-label={`Pre-order ${activeModel.name} sneakers`}
-            className={`rounded-full bg-gradient-to-r ${MODEL_ACCENT[selectedModel].glow} border px-5 py-2 text-xs font-semibold tracking-[0.2em] text-white uppercase transition-all duration-300`}
+            className={`rounded-full cursor-pointer bg-gradient-to-r ${MODEL_ACCENT[selectedModel].glow} border px-5 py-2 text-xs font-semibold tracking-[0.2em] text-white uppercase transition-all duration-300`}
           >
             Pre-order
           </button>
