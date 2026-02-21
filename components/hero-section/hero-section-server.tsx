@@ -94,7 +94,7 @@ function HeroSectionInner() {
       {/* ── CONTENT LAYER ──────────────────────────────────── */}
       <div className="relative z-10 h-full min-h-[100dvh] pt-4 pb-4 lg:pt-0 lg:pb-0 flex flex-col justify-center">
         {/* Mobile-only Top Brand Logo - Strictly hidden on Desktop */}
-        <div className="flex lg:hidden justify-center pt-2 pb-4 px-4">
+        <div className="lg:hidden absolute top-4 left-0 right-0 flex justify-center px-4 z-20">
           <Image
             src="/brand-logohero.png"
             alt="FASSIANO"
