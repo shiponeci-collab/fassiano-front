@@ -92,9 +92,9 @@ function HeroSectionInner() {
       {mounted && <HeroBackground />}
 
       {/* ── CONTENT LAYER ──────────────────────────────────── */}
-      <div className="relative z-10 min-h-screen pt-6 pb-6">
+      <div className="relative z-10 h-full min-h-[100dvh] pt-4 pb-4 lg:pt-0 lg:pb-0 flex flex-col justify-center">
         {/* Mobile-only Top Brand Logo - Strictly hidden on Desktop */}
-        <div className="flex lg:hidden justify-center pt-4 pb-4 px-4">
+        <div className="flex lg:hidden justify-center pt-2 pb-4 px-4">
           <Image
             src="/brand-logohero.png"
             alt="FASSIANO"
@@ -105,19 +105,19 @@ function HeroSectionInner() {
           />
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-4 md:gap-12 items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-4 md:gap-6 xl:gap-12 items-center">
             {/* Left Column - Static Content with CSS Animations */}
             <article
-              className="flex flex-col justify-center space-y-6 md:space-y-8 order-2 lg:order-1 text-center lg:text-left lg:min-h-[500px]"
+              className="flex flex-col justify-center space-y-4 md:space-y-6 lg:space-y-8 order-2 lg:order-1 text-center lg:text-left h-full"
               style={{ willChange: "auto" }}
             >
               <HeroContentStatic />
             </article>
 
             {/* Right Column - Interactive Gallery (First on Mobile) */}
-            <div className="flex items-center justify-center order-1 lg:order-2 py-2 lg:py-0 mt-2 lg:mt-4">
-              <div className="w-full max-w-md lg:max-w-[440px] xl:max-w-lg 2xl:max-w-xl drop-shadow-[0_35px_50px_rgba(0,0,0,0.7)]">
+            <div className="flex items-center justify-center order-1 lg:order-2 py-1 lg:py-0">
+              <div className="w-full max-w-md lg:max-w-[400px] xl:max-w-lg 2xl:max-w-xl drop-shadow-[0_35px_50px_rgba(0,0,0,0.7)]">
                 <Suspense fallback={<GalleryFallback />}>
                   <ImageGallery modelData={MODEL_DATA as any} />
                 </Suspense>
@@ -127,9 +127,9 @@ function HeroSectionInner() {
         </div>
       </div>
 
-      {/* Made in Morocco - Responsive Centering */}
+      {/* Made in Morocco - Absolute centering ensures no layout shift or scroll */}
       {mounted && (
-        <div className="relative lg:absolute w-full lg:w-auto flex justify-center lg:block bottom-auto lg:bottom-6 left-0 lg:left-1/2 lg:-translate-x-1/2 z-20 mt-8 mb-4 lg:mt-0 pb-10 lg:pb-0">
+        <div className="absolute w-full flex justify-center bottom-2 lg:bottom-4 left-0 z-20 pointer-events-none">
           <span
             className="text-[#e5e4e2]/30 text-[9px] sm:text-[10px] font-normal tracking-[0.4em] uppercase whitespace-nowrap"
             style={{ fontFamily: "-apple-system, BlinkMacSystemFont, \"SF Pro Display\", \"SF Pro Text\", system-ui, sans-serif" }}

@@ -67,9 +67,9 @@ export function HeroContentStatic() {
   const c = MODEL_CONTENT[selectedModel]
 
   return (
-    <div className="text-left space-y-8">
+    <div className="text-left space-y-4 xl:space-y-8 h-full flex flex-col justify-center">
       {/* Brand Logo - Desktop Only */}
-      <div className="hidden lg:block mb-6">
+      <div className="hidden lg:block mb-2 xl:mb-6">
         <h1 className="sr-only">FASSIANO - Premium Heritage Sneakers</h1>
         <Image
           src="/brand-logohero.png"
@@ -77,9 +77,9 @@ export function HeroContentStatic() {
           width={284}
           height={96}
           priority
-          sizes="284px"
-          className="h-12 sm:h-14 md:h-16 lg:h-20 xl:h-24 w-auto object-contain filter brightness-0 invert"
-          style={{ maxWidth: "284px", height: "auto" }}
+          sizes="180px, (min-width: 1280px) 284px"
+          className="h-10 xl:h-20 w-auto object-contain filter brightness-0 invert"
+          style={{ maxWidth: "100%", height: "auto" }}
           fetchPriority="high"
         />
       </div>
@@ -95,7 +95,7 @@ export function HeroContentStatic() {
       </div>
 
       {/* Headline + tagline + accent bar — all change per model */}
-      <div className="space-y-4">
+      <div className="space-y-2 xl:space-y-4">
         <h2
           className="text-xl sm:text-2xl lg:text-3xl font-light text-white/90 tracking-wide transition-all duration-500"
           style={{ fontFamily: heroFont }}
@@ -118,7 +118,7 @@ export function HeroContentStatic() {
 
         {/* Italic subtitle */}
         <p
-          className="hidden lg:block text-white/35 text-xs sm:text-sm font-light italic tracking-wide max-w-xs transition-all duration-500"
+          className="hidden xl:block text-white/35 text-xs sm:text-sm font-light italic tracking-wide max-w-xs transition-all duration-500"
           style={{ fontFamily: heroFont }}
         >
           {c.subtitle}
@@ -131,8 +131,8 @@ export function HeroContentStatic() {
       </div>
 
       {/* Feature bullets — dots change color per model */}
-      <div className="space-y-3">
-        <div className="flex flex-wrap gap-6 text-white/50 text-xs" role="list">
+      <div className="space-y-2 xl:space-y-3">
+        <div className="flex flex-wrap gap-4 xl:gap-6 text-white/50 text-xs" role="list">
           {c.features.map((feature, index) => (
             <span key={index} className="flex items-center gap-2" role="listitem">
               <div
